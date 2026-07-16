@@ -63,10 +63,10 @@ export const STAGE_LABELS: Record<Stage, string> = {
 };
 
 export const SPECIES: { id: SpeciesId; name: string; shortName: string; defaultName: string; trait: string; atlas: string }[] = [
-  { id: 'sprout', name: 'Росток', shortName: 'Росток', defaultName: 'Луми', trait: 'добрый и любопытный', atlas: '/assets/pet-atlas.png' },
-  { id: 'cat', name: 'Звёздный кот', shortName: 'Кот', defaultName: 'Моки', trait: 'игривый и независимый', atlas: '/assets/pet-atlas-cat.png' },
-  { id: 'aqua', name: 'Аксолотль', shortName: 'Акса', defaultName: 'Плюх', trait: 'спокойный и ласковый', atlas: '/assets/pet-atlas-aqua.png' },
-  { id: 'dragon', name: 'Облачный дракон', shortName: 'Дракон', defaultName: 'Искра', trait: 'смелый и озорной', atlas: '/assets/pet-atlas-dragon.png' },
+  { id: 'sprout', name: 'Росток', shortName: 'Росток', defaultName: 'Луми', trait: 'добрый и любопытный', atlas: '/assets/pet-atlas.webp' },
+  { id: 'cat', name: 'Звёздный кот', shortName: 'Кот', defaultName: 'Моки', trait: 'игривый и независимый', atlas: '/assets/pet-atlas-cat.webp' },
+  { id: 'aqua', name: 'Аксолотль', shortName: 'Акса', defaultName: 'Плюх', trait: 'спокойный и ласковый', atlas: '/assets/pet-atlas-aqua.webp' },
+  { id: 'dragon', name: 'Облачный дракон', shortName: 'Дракон', defaultName: 'Искра', trait: 'смелый и озорной', atlas: '/assets/pet-atlas-dragon.webp' },
 ];
 
 export const NEED_LABELS: Record<Need, string> = {

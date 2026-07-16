@@ -67,14 +67,14 @@ There is currently no lint or unit-test script. Do not claim those checks passed
 ├── package-lock.json
 ├── public/
 │   └── assets/
-│       ├── cozy-room.png
-│       ├── device.png
-│       ├── action-atlas.png
-│       ├── pet-atlas.png
-│       ├── pet-atlas-cat.png
-│       ├── pet-atlas-aqua.png
-│       ├── pet-atlas-dragon.png
-│       └── favicon.png
+│       ├── cozy-room.webp
+│       ├── device.webp
+│       ├── action-atlas.webp
+│       ├── pet-atlas.webp
+│       ├── pet-atlas-cat.webp
+│       ├── pet-atlas-aqua.webp
+│       ├── pet-atlas-dragon.webp
+│       └── favicon.webp
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx
@@ -209,14 +209,14 @@ Retro mode is intentionally asset-light and focused:
 
 Do not replace retro pets with PNGs for convenience. If a shape is simple, edit the pixel matrices or code-drawn modifiers.
 
-Retro mode is the default when `lumi-visual-mode` has not been set. The mode toggle must remain readable in normal, hover, focus, and active states. In particular, preserve the explicit `.retro-mode .mode-toggle:hover` contrast override.
+Cozy mode is the default when `lumi-visual-mode` has not been set. The mode toggle must remain readable in normal, hover, focus, and active states. In particular, preserve the explicit `.retro-mode .mode-toggle:hover` contrast override.
 
 ### Cozy mode
 
 Cozy mode uses generated art but DOM UI:
 
-- `cozy-room.png` is the page background;
-- `device.png` is a transparent illustrated shell;
+- `cozy-room.webp` is the page background;
+- `device.webp` is a transparent illustrated shell;
 - `.device-screen` is a real interactive DOM surface positioned over the empty screen opening;
 - A/B/C are transparent DOM buttons positioned over the illustrated physical buttons;
 - side panels show expanded state and quick actions on wide layouts;

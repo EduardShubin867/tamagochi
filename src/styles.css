@@ -25,7 +25,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: #211b38;
-  background-image: linear-gradient(rgba(24, 18, 39, .12), rgba(24, 18, 39, .42)), url('/assets/cozy-room.png');
+  background-image: linear-gradient(rgba(24, 18, 39, .12), rgba(24, 18, 39, .42)), url('/assets/cozy-room.webp');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -129,7 +129,7 @@ button:focus-visible { outline: 3px solid #fff0aa; outline-offset: 3px; }
 .speech.urgent { background: #f38ca9; color: #3a1730; animation: nudge 1.5s ease-in-out infinite; }
 @keyframes nudge { 50% { transform: translateY(-2px); } }
 .pet-stage { position: relative; display: grid; place-items: center; min-height: 0; }
-.pet-sprite { width: 58%; aspect-ratio: 1; background-image: url('/assets/pet-atlas.png'); background-size: 300% 300%; background-repeat: no-repeat; image-rendering: pixelated; animation: pet-bob 2.2s ease-in-out infinite; }
+.pet-sprite { width: 58%; aspect-ratio: 1; background-image: url('/assets/pet-atlas.webp'); background-size: 300% 300%; background-repeat: no-repeat; image-rendering: pixelated; animation: pet-bob 2.2s ease-in-out infinite; }
 .pet-sprite.compact { width: 32%; margin: 1% auto -7%; }
 .pet-sprite.sleeping { animation-duration: 4s; }
 @keyframes pet-bob { 50% { transform: translateY(-4%) rotate(1deg); } }
@@ -152,7 +152,7 @@ button:focus-visible { outline: 3px solid #fff0aa; outline-offset: 3px; }
 .screen-menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4%; margin: 8% 0 5%; }
 .screen-menu-grid button { aspect-ratio: 1; padding: 0; border: 1px solid rgba(255,255,255,.06); border-radius: 22%; background: rgba(255,255,255,.04); cursor: pointer; }
 .screen-menu-grid button.selected { border-color: #f4cf88; background: rgba(244,207,136,.15); box-shadow: 0 0 14px rgba(244,207,136,.13); }
-.icon-asset { display: block; width: 100%; aspect-ratio: 1; background-image: url('/assets/action-atlas.png'); background-size: 400% 200%; background-repeat: no-repeat; image-rendering: pixelated; }
+.icon-asset { display: block; width: 100%; aspect-ratio: 1; background-image: url('/assets/action-atlas.webp'); background-size: 400% 200%; background-repeat: no-repeat; image-rendering: pixelated; }
 .screen-caption { display: grid; gap: 3px; text-align: center; }
 .screen-caption strong { color: #f8e5b8; font-size: clamp(7px, .78vw, 12px); }
 .screen-caption span { color: #9f93aa; font-size: clamp(5px, .55vw, 8px); }

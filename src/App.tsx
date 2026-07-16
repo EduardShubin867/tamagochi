@@ -34,7 +34,7 @@ import {
 
 const SAVE_KEY = 'lumi-pocket-pet-v3';
 const VISUAL_MODE_KEY = 'lumi-visual-mode';
-const FAVICON_SOURCE = '/assets/favicon.png';
+const FAVICON_SOURCE = '/assets/favicon.webp';
 
 interface TabPresentation {
   title: string;
@@ -466,7 +466,7 @@ function RetroDevice({ state, message, actions, press }: {
 function App() {
   const [state, setState] = useState<PetState>(loadPet);
   const [message, setMessage] = useState('');
-  const [retroMode, setRetroMode] = useState(() => localStorage.getItem(VISUAL_MODE_KEY) !== 'modern');
+  const [retroMode, setRetroMode] = useState(() => localStorage.getItem(VISUAL_MODE_KEY) === 'retro');
   const [focusReaction, setFocusReaction] = useState(false);
   const [dialog, setDialog] = useState<DialogKind | null>(null);
   const [nameDraft, setNameDraft] = useState(state.name);
@@ -876,7 +876,7 @@ function App() {
 
         <section className="device-zone" aria-label="Игровое устройство">
           <div className={`device-wrap ${focusReaction ? 'focus-return' : ''}`}>
-            <img className="device-art" src="/assets/device.png" alt="Лавандовый карманный тамагочи" />
+            <img className="device-art" src="/assets/device.webp" alt="Лавандовый карманный тамагочи" />
             <div className="device-screen">
               <DeviceScreen state={state} message={message} actions={actions} />
               {state.paused && <div className="pause-overlay"><b>Пауза</b><span>время остановлено</span></div>}
