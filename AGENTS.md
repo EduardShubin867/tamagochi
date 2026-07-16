@@ -124,6 +124,7 @@ Current keys:
 ```ts
 const SAVE_KEY = 'lumi-pocket-pet-v3';
 const VISUAL_MODE_KEY = 'lumi-visual-mode';
+const ONBOARDING_KEY = 'lumi-onboarding-seen-v1';
 ```
 
 Important invariants:
@@ -134,7 +135,7 @@ Important invariants:
 - If a breaking state change is unavoidable, bump the save version/key and implement an intentional migration or explain the reset in the task handoff.
 - The selection screen pauses simulation and offline catch-up. A new egg must not hatch while the player is still choosing a family.
 - Offline progress is capped at 72 hours.
-- Transient UI such as mini-game results and temporary messages should not become long-lived renderer objects in the save.
+- Transient UI such as mini-game results and temporary messages should not become long-lived renderer objects in the save. The one-time welcome dialog may use its separate localStorage flag, not `PetState`.
 
 ### Time model
 

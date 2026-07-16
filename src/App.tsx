@@ -34,6 +34,7 @@ import {
 
 const SAVE_KEY = 'lumi-pocket-pet-v3';
 const VISUAL_MODE_KEY = 'lumi-visual-mode';
+const ONBOARDING_KEY = 'lumi-onboarding-seen-v1';
 const FAVICON_SOURCE = '/assets/favicon.webp';
 
 interface TabPresentation {
@@ -42,7 +43,7 @@ interface TabPresentation {
   badgeColor: string;
 }
 
-type DialogKind = 'rename' | 'reset';
+type DialogKind = 'welcome' | 'rename' | 'reset';
 
 const TAB_NEEDS: Record<NonNullable<PetState['callReason']>, Omit<TabPresentation, 'badgeColor'>> = {
   hungry: { title: 'хочет есть', badge: '!' },
@@ -468,7 +469,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [retroMode, setRetroMode] = useState(() => localStorage.getItem(VISUAL_MODE_KEY) === 'retro');
   const [focusReaction, setFocusReaction] = useState(false);
-  const [dialog, setDialog] = useState<DialogKind | null>(null);
+  const [dialog, setDialog] = useState<DialogKind | null>(() => localStorage.getItem(ONBOARDING_KEY) ? null : 'welcome');
   const [nameDraft, setNameDraft] = useState(state.name);
   const messageTimer = useRef<number | undefined>(undefined);
   const focusReactionTimer = useRef<number | undefined>(undefined);
@@ -800,6 +801,7 @@ function App() {
   const alertCount = [state.hunger < 25, state.happiness < 22, state.poops > 0, state.sick, state.callReason].filter(Boolean).length;
 
   const closeDialog = () => {
+    if (dialog === 'welcome') localStorage.setItem(ONBOARDING_KEY, 'true');
     dialogRef.current?.close();
     setDialog(null);
     window.requestAnimationFrame(() => dialogTrigger.current?.focus());
@@ -820,6 +822,10 @@ function App() {
   };
 
   const submitDialog = () => {
+    if (dialog === 'welcome') {
+      closeDialog();
+      return;
+    }
     if (dialog === 'rename') {
       const name = nameDraft.trim().slice(0, 10);
       if (!name) return;
@@ -936,14 +942,21 @@ function App() {
       >
         <form onSubmit={(event) => { event.preventDefault(); submitDialog(); }}>
           <div className={`dialog-icon ${dialog === 'reset' ? 'danger' : ''}`} aria-hidden="true">
-            {dialog === 'reset' ? <TriangleAlert /> : <Pencil />}
+            {dialog === 'welcome' ? <Sparkles /> : dialog === 'reset' ? <TriangleAlert /> : <Pencil />}
           </div>
           <div className="dialog-copy">
-            <h2 id="app-dialog-title">{dialog === 'reset' ? 'Начать заново?' : 'Как зовут питомца?'}</h2>
+            <h2 id="app-dialog-title">{dialog === 'welcome' ? 'Добро пожаловать!' : dialog === 'reset' ? 'Начать заново?' : 'Как зовут питомца?'}</h2>
             <p id="app-dialog-description">
-              {dialog === 'reset' ? 'Текущий прогресс будет удалён, а выбор нового яйца начнётся сначала.' : 'Имя можно изменить в любой момент. До 10 символов.'}
+              {dialog === 'welcome' ? 'Луми — маленький друг, которому нужна твоя забота.' : dialog === 'reset' ? 'Текущий прогресс будет удалён, а выбор нового яйца начнётся сначала.' : 'Имя можно изменить в любой момент. До 10 символов.'}
             </p>
           </div>
+          {dialog === 'welcome' && (
+            <div className="welcome-points">
+              <p><b>Живёт в реальном времени</b>Питомец растёт и ждёт ухода даже без открытого браузера. При возвращении учитывается до 72 часов.</p>
+              <p><b>Два настроения</b>Уютный вид включён сразу, а ретро-режим можно выбрать кнопкой в правом верхнем углу.</p>
+              <p><b>Всё под рукой</b>Нажимай A, B и C на устройстве или используй клавиатуру: A/←, B/Enter, C/Esc.</p>
+            </div>
+          )}
           {dialog === 'rename' && (
             <label className="dialog-field" htmlFor="pet-name">
               <span>Имя питомца</span>
@@ -958,12 +971,12 @@ function App() {
             </label>
           )}
           <div className="dialog-actions">
-            <button type="button" className="dialog-secondary" data-autofocus={dialog === 'reset' ? '' : undefined} onClick={closeDialog}>
+            {dialog !== 'welcome' && <button type="button" className="dialog-secondary" data-autofocus={dialog === 'reset' ? '' : undefined} onClick={closeDialog}>
               <X aria-hidden="true" />Отмена
-            </button>
+            </button>}
             <button type="submit" className={`dialog-primary ${dialog === 'reset' ? 'danger' : ''}`} disabled={dialog === 'rename' && !nameDraft.trim()}>
               {dialog === 'reset' ? <RotateCcw aria-hidden="true" /> : <Check aria-hidden="true" />}
-              {dialog === 'reset' ? 'Начать заново' : 'Сохранить'}
+              {dialog === 'welcome' ? 'Начать заботиться' : dialog === 'reset' ? 'Начать заново' : 'Сохранить'}
             </button>
           </div>
         </form>
