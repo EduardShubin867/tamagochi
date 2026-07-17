@@ -6,9 +6,9 @@ interface ActionLabel {
 }
 
 export const quickCareCopy = {
-  title: 'ЗАБОТА О КОРЕШКЕ',
-  prompt: 'Выбери, что сделать',
-  hintTitle: 'Совет Герды',
+  title: 'РИТУАЛЫ УХОДА',
+  prompt: 'Выбери резной знак',
+  hintTitle: 'Запись Герды',
 } as const;
 
 export const actionLabels = {
@@ -22,15 +22,7 @@ export const actionLabels = {
   clock: { label: 'Ход времени', hint: 'посмотреть распорядок' },
 } satisfies Record<ActionId, ActionLabel>;
 
-export type MandrakeCondition =
-  | 'normal'
-  | 'hungry'
-  | 'sad'
-  | 'dirty'
-  | 'sick'
-  | 'sleepy'
-  | 'capricious'
-  | 'critical';
+export type MandrakeCondition = 'normal' | 'hungry' | 'sad' | 'dirty' | 'sick' | 'sleepy' | 'capricious' | 'critical';
 
 export const mandrakeStatuses = {
   normal: 'всё тихо под корнями',
@@ -82,6 +74,21 @@ const hedaPhrases = [
   'Землю поменяй, пока она сама не потребовала новый горшок.',
 ] as const;
 
+const petInteractionPhrases = {
+  normal: [
+    'Ладно, можешь погладить. Один раз.',
+    'Я слежу за тобой, между прочим.',
+    'Листья не трогай… хотя уже поздно.',
+  ],
+  hungry: ['Руки тёплые. А еда где?', 'Гладить будешь после подкормки.'],
+  sad: ['Ещё раз. Только никому не рассказывай.', 'Посиди рядом. Можешь даже молча.'],
+  dirty: ['Не стряхивай землю! Она лечебная.', 'Сначала обмой корешок, потом обнимай.'],
+  sick: ['Осторожнее… сегодня корни ноют.', 'Тише. Мне и без того нехорошо.'],
+  sleepy: ['М-м-м… ещё пять минут под корнями.', 'Не буди. Я расту во сне.'],
+  capricious: ['Ай! Я могла и укусить.', 'Это было поглаживание или покушение?'],
+  critical: ['Не уходи далеко.', 'Посиди рядом, пока силы не вернутся.'],
+} satisfies Record<MandrakeCondition, readonly string[]>;
+
 export const characterPhrases = {
   mandrake: mandrakePhrases,
   gerda: gerdaPhrases,
@@ -98,7 +105,8 @@ export const characterPhrases = {
 
 export function getMandrakeCondition(state: PetState): MandrakeCondition {
   if (state.sick) return 'sick';
-  if (state.health < 25 || state.hunger < 10 || state.happiness < 10 || state.energy < 10 || state.hygiene < 10) return 'critical';
+  if (state.health < 25 || state.hunger < 10 || state.happiness < 10 || state.energy < 10 || state.hygiene < 10)
+    return 'critical';
   if (state.energy < 25 || state.callReason === 'sleepy') return 'sleepy';
   if (state.hunger < 25 || state.callReason === 'hungry') return 'hungry';
   if (state.hygiene < 35 || state.poops > 0 || state.callReason === 'dirty') return 'dirty';
@@ -131,4 +139,13 @@ export function pickActionPhrase(action: ActionId, previousPhrase: string): stri
   const candidates = phrases.filter((phrase) => phrase !== previousPhrase);
   if (!candidates.length) return null;
   return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+export function pickPetInteractionPhrase(state: PetState, previousPhrase: string): string {
+  if (state.stage === 'egg') return 'Из кокона доносится недовольное шуршание.';
+  const condition = getMandrakeCondition(state);
+  const phrases = petInteractionPhrases[condition];
+  const candidates = phrases.filter((phrase) => phrase !== previousPhrase);
+  const pool = candidates.length ? candidates : phrases;
+  return pool[Math.floor(Math.random() * pool.length)];
 }

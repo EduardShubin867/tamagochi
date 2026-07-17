@@ -1,0 +1,409 @@
+.modern-mode .device-zone {
+  position: relative;
+  z-index: 2;
+}
+.modern-mode .device-wrap {
+  width: min(100%, 620px);
+  aspect-ratio: 0.98;
+  position: relative;
+  border: 1px solid rgba(221, 176, 106, 0.2);
+  border-radius: 45% 52% 43% 48% / 38% 40% 56% 52%;
+  background:
+    radial-gradient(ellipse at 50% 39%, rgba(219, 151, 58, 0.26) 0 10%, transparent 37%),
+    radial-gradient(ellipse at 50% 45%, #2b1d17 0 39%, transparent 40%),
+    repeating-radial-gradient(ellipse at 50% 48%, transparent 0 12px, rgba(15, 8, 5, 0.18) 13px 16px),
+    linear-gradient(112deg, #684933, #39251c 42%, #553925 72%, #281912);
+  box-shadow:
+    0 32px 52px rgba(7, 3, 2, 0.5),
+    inset 16px 8px 22px rgba(255, 220, 165, 0.06),
+    inset -20px -18px 28px rgba(8, 4, 2, 0.52),
+    0 0 70px rgba(215, 154, 60, 0.08);
+  filter: none;
+}
+
+.modern-mode .device-wrap::before {
+  inset: 4.8% 7.5% 8%;
+  border: clamp(14px, 2.4vw, 25px) solid rgba(43, 27, 19, 0.86);
+  border-left-color: rgba(92, 62, 42, 0.84);
+  border-radius: 43% 48% 44% 46% / 36% 42% 54% 49%;
+  box-shadow:
+    inset 0 0 18px rgba(5, 2, 1, 0.72),
+    0 0 0 5px rgba(24, 14, 10, 0.24);
+}
+.modern-mode .device-wrap::after {
+  left: 13%;
+  right: 13%;
+  bottom: 12.5%;
+  height: 14%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(184, 101, 46, 0.28), transparent 67%);
+  filter: blur(10px);
+  animation: ember-glow 4.2s ease-in-out infinite;
+}
+
+.root-crest {
+  position: absolute;
+  z-index: 3;
+  inset: 1% 0 auto;
+  height: 20%;
+  pointer-events: none;
+}
+.root-crest i {
+  position: absolute;
+  top: 26%;
+  width: 36%;
+  height: 72%;
+  border: 12px solid #422a1d;
+  border-bottom: 0;
+  border-radius: 70% 70% 0 0;
+  filter: drop-shadow(0 6px 4px rgba(5, 2, 1, 0.38));
+}
+.root-crest i:first-child {
+  left: 15%;
+  border-right: 0;
+  transform: rotate(-10deg);
+}
+.root-crest i:nth-child(2) {
+  right: 15%;
+  border-left: 0;
+  transform: rotate(10deg);
+}
+.root-crest span {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #76522e;
+  border-radius: 46% 54% 49% 51%;
+  color: #e0a74d;
+  background: radial-gradient(circle, #68452a, #2b1b13 72%);
+  box-shadow:
+    inset 0 0 14px rgba(215, 154, 60, 0.18),
+    0 0 20px rgba(215, 154, 60, 0.22);
+  font:
+    700 21px/1 Georgia,
+    serif;
+  transform: translateX(-50%) rotate(2deg);
+}
+.moss-bed {
+  position: absolute;
+  z-index: 3;
+  left: 18%;
+  right: 18%;
+  top: 65%;
+  height: 9%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 12% 50%, #75805e 0 5%, transparent 6%),
+    radial-gradient(circle at 28% 30%, #5e6d4f 0 8%, transparent 9%),
+    radial-gradient(circle at 52% 54%, #6c7658 0 8%, transparent 9%),
+    radial-gradient(circle at 77% 32%, #516048 0 9%, transparent 10%),
+    radial-gradient(circle at 90% 58%, #6d795a 0 6%, transparent 7%), linear-gradient(180deg, #526047, #2a3529);
+  box-shadow:
+    0 -3px 13px rgba(89, 102, 78, 0.26),
+    0 8px 12px rgba(6, 3, 2, 0.34);
+  transform: perspective(180px) rotateX(54deg);
+  pointer-events: none;
+}
+
+.modern-mode .device-screen {
+  left: 17.3%;
+  top: 20.5%;
+  width: 65.4%;
+  height: 46.5%;
+  z-index: 2;
+  border: 1px solid rgba(231, 191, 126, 0.22);
+  border-radius: 25% 29% 24% 27% / 20% 22% 25% 24%;
+  color: #e7d8b8;
+  background:
+    radial-gradient(ellipse at 50% 60%, rgba(100, 91, 62, 0.18), transparent 58%),
+    linear-gradient(180deg, #1f1a15, #171310);
+  box-shadow:
+    0 0 0 clamp(7px, 1.35vw, 14px) rgba(31, 19, 14, 0.94),
+    0 0 0 clamp(10px, 1.9vw, 20px) rgba(93, 61, 39, 0.74),
+    inset 0 0 32px rgba(4, 2, 1, 0.82),
+    0 0 30px rgba(215, 154, 60, 0.16);
+  font-family: 'Manrope', sans-serif;
+}
+.modern-mode .device-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 17% 18%, rgba(215, 154, 60, 0.08) 0 1px, transparent 2px),
+    radial-gradient(circle at 76% 28%, rgba(215, 154, 60, 0.08) 0 1px, transparent 2px),
+    linear-gradient(180deg, transparent 74%, rgba(84, 100, 69, 0.09));
+  background-size:
+    53px 47px,
+    71px 63px,
+    auto;
+}
+.modern-mode .device-screen::after {
+  background: linear-gradient(105deg, rgba(255, 235, 190, 0.025), transparent 28%);
+  mix-blend-mode: normal;
+}
+.modern-mode .screen-page {
+  z-index: 1;
+  padding: 7.5% 8.5%;
+}
+.modern-mode .screen-topline {
+  color: #aa987c;
+  font:
+    800 clamp(7px, 1.65cqw, 10px)/1 'Manrope',
+    sans-serif;
+  letter-spacing: 0.13em;
+}
+.modern-mode .speech {
+  border: 1px solid rgba(220, 178, 109, 0.33);
+  border-radius: 7px 11px 6px 9px;
+  color: #e9d9b9;
+  background: linear-gradient(90deg, rgba(69, 45, 32, 0.83), rgba(43, 31, 25, 0.86));
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.05),
+    0 4px 12px rgba(4, 2, 1, 0.28);
+  font:
+    700 clamp(8px, 2cqw, 12px)/1.4 'Manrope',
+    sans-serif;
+}
+.modern-mode .speech.urgent {
+  color: #ffe5cc;
+  background: linear-gradient(90deg, #704036, #5b3135);
+  border-color: #b97665;
+}
+.modern-mode .home-screen.lights-off::before {
+  background: rgba(7, 6, 5, 0.61);
+}
+.modern-mode .home-screen .pet-stage {
+  overflow: visible;
+}
+.modern-mode .home-screen .pet-sprite {
+  width: 58%;
+  translate: 0 -12%;
+  filter: drop-shadow(0 9px 6px rgba(5, 2, 1, 0.26));
+}
+.modern-mode .home-screen .speech {
+  width: 121%;
+  min-height: calc(14cqw + 5px);
+  justify-self: center;
+  display: grid;
+  place-items: top;
+  padding: 6% 10% 8%;
+  translate: 0 60%;
+  border: 0;
+  border-top: 2px solid rgba(194, 132, 67, 0.62);
+  border-radius: 0;
+  background: linear-gradient(180deg, rgba(75, 48, 34, 0.98), rgba(36, 23, 17, 0.99));
+  box-shadow:
+    inset 0 5px 10px rgba(10, 5, 3, 0.42),
+    inset 0 1px rgba(255, 220, 164, 0.11),
+    0 -4px 12px rgba(160, 95, 40, 0.13);
+  isolation: isolate;
+  text-align: center;
+}
+.modern-mode .home-screen.long-callout .speech {
+  padding-top: 3%;
+}
+.modern-mode .home-screen .speech::after {
+  display: none;
+}
+.modern-mode .home-screen .speech.urgent {
+  border-top-color: #b97665;
+  background: linear-gradient(180deg, #6c3d32, #281915);
+  box-shadow:
+    inset 0 5px 10px rgba(20, 5, 3, 0.46),
+    0 -4px 14px rgba(178, 82, 62, 0.18);
+}
+.modern-mode .zzz {
+  color: #c5b08d;
+}
+.modern-mode .screen-primary {
+  color: #26170f;
+  background: #d9b06a;
+}
+
+.modern-mode .device-key {
+  top: 75.2%;
+  width: 12.8%;
+  z-index: 6;
+  border: clamp(2px, 0.36vw, 4px) solid #281912;
+  color: #2b1a12;
+  background:
+    radial-gradient(circle at 36% 28%, rgba(255, 255, 255, 0.45) 0 5%, transparent 27%),
+    linear-gradient(145deg, #e9d9bc, #bfa77f 62%, #806b4e);
+  box-shadow:
+    0 0 0 2px #68472c,
+    0 7px 0 #1a100c,
+    0 12px 18px rgba(7, 3, 2, 0.34),
+    inset 0 2px rgba(255, 255, 255, 0.38);
+}
+.modern-mode .device-key:hover {
+  filter: brightness(1.09) saturate(1.04);
+  transform: translateY(-2px);
+}
+.modern-mode .device-key:active {
+  transform: translateY(5px) scale(0.98);
+  box-shadow:
+    0 0 0 2px #68472c,
+    0 2px 0 #1a100c,
+    inset 0 2px rgba(15, 8, 5, 0.18);
+}
+.modern-mode .device-key span {
+  font:
+    800 clamp(14px, 2.2vw, 22px)/1 Georgia,
+    serif;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.45);
+}
+.modern-mode .key-a {
+  left: 25.6%;
+  transform: rotate(-3deg);
+}
+.modern-mode .key-b {
+  left: 43.6%;
+  background:
+    radial-gradient(circle at 36% 28%, rgba(255, 255, 255, 0.4) 0 5%, transparent 27%),
+    linear-gradient(145deg, #dba94f, #a56b2e 65%, #68411f);
+}
+.modern-mode .key-c {
+  left: 61.6%;
+  transform: rotate(3deg);
+}
+
+.cradle-embers {
+  position: absolute;
+  z-index: 1;
+  inset: auto 17% 5% 17%;
+  height: 12%;
+  pointer-events: none;
+}
+.cradle-embers i {
+  position: absolute;
+  bottom: 12%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #e5a247;
+  box-shadow: 0 0 10px #c96c2e;
+  animation: ember-rise 4.8s ease-in infinite;
+}
+.cradle-embers i:nth-child(1) {
+  left: 8%;
+  animation-delay: -1.2s;
+}
+.cradle-embers i:nth-child(2) {
+  left: 37%;
+  width: 3px;
+  height: 3px;
+  animation-delay: -3.4s;
+}
+.cradle-embers i:nth-child(3) {
+  right: 34%;
+  animation-delay: -2.2s;
+}
+.cradle-embers i:nth-child(4) {
+  right: 9%;
+  width: 2px;
+  height: 2px;
+  animation-delay: -0.5s;
+}
+
+.modern-mode .key-hint {
+  gap: 9px;
+  margin-top: -22px;
+  position: relative;
+  z-index: 7;
+}
+.modern-mode .key-hint span {
+  min-width: 132px;
+  padding: 8px 12px;
+  border: 1px solid rgba(206, 169, 111, 0.17);
+  border-radius: 9px 6px 10px 7px;
+  color: #bfb098;
+  background: rgba(35, 24, 18, 0.88);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.04),
+    0 5px 14px rgba(6, 3, 2, 0.25);
+  backdrop-filter: none;
+}
+.modern-mode .key-hint b {
+  color: #e3bc74;
+  font-family: Georgia, serif;
+}
+.modern-mode .key-hint svg {
+  color: #7d8a67;
+}
+
+@keyframes hearth-breathe {
+  50% {
+    opacity: 0.62;
+    transform: scale(1.08);
+  }
+}
+@keyframes ember-glow {
+  50% {
+    opacity: 0.58;
+    transform: scale(1.07);
+  }
+}
+@keyframes ember-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-35px) translateX(8px);
+  }
+}
+
+.modern-mode .ritual-flight {
+  --ritual-start-left: 103%;
+  --ritual-start-top: 41%;
+  position: absolute;
+  z-index: 9;
+  left: var(--ritual-start-left);
+  top: var(--ritual-start-top);
+  width: clamp(38px, 8cqw, 54px);
+  aspect-ratio: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 8px rgba(7, 3, 2, 0.48));
+  animation: ritual-to-cradle 0.82s cubic-bezier(0.22, 0.75, 0.24, 1) both;
+}
+.modern-mode .ritual-flight .ritual-icon {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  display: block;
+  filter: brightness(1.16) drop-shadow(0 0 12px rgba(221, 164, 72, 0.48));
+}
+
+@keyframes ritual-to-cradle {
+  0% {
+    left: var(--ritual-start-left);
+    top: var(--ritual-start-top);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.68) rotate(18deg);
+  }
+  16% {
+    opacity: 1;
+  }
+  72% {
+    left: 52%;
+    top: 43%;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.86) rotate(-7deg);
+  }
+  100% {
+    left: 52%;
+    top: 43%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.34) rotate(3deg);
+  }
+}

@@ -64,8 +64,32 @@ export const STAGE_LABELS: Record<Stage, string> = {
   elder: 'Древний корень',
 };
 
-export const SPECIES: { id: SpeciesId; name: string; shortName: string; defaultName: string; trait: string; atlas: string; sleepAtlas?: string }[] = [
-  { id: 'mandrake', name: 'Живая мандрагора', shortName: 'Мандрагора', defaultName: 'Корча', trait: 'язвительная, сварливая и верная', atlas: '/assets/pet-atlas-mandrake.png', sleepAtlas: '/assets/pet-atlas-mandrake-sleep.png' },
+export const SPECIES: {
+  id: SpeciesId;
+  name: string;
+  shortName: string;
+  defaultName: string;
+  trait: string;
+  atlas: string;
+  sleepAtlas?: string;
+  idleAtlases?: {
+    young: string;
+    mature: string;
+  };
+}[] = [
+  {
+    id: 'mandrake',
+    name: 'Живая мандрагора',
+    shortName: 'Мандрагора',
+    defaultName: 'Корча',
+    trait: 'язвительная, сварливая и верная',
+    atlas: '/assets/pet-atlas-mandrake.png',
+    sleepAtlas: '/assets/pet-atlas-mandrake-sleep.png',
+    idleAtlases: {
+      young: '/assets/pet-idle-mandrake-young-v1.png',
+      mature: '/assets/pet-idle-mandrake-mature-v1.png',
+    },
+  },
 ];
 
 export const NEED_LABELS: Record<Need, string> = {
@@ -169,7 +193,8 @@ function evolve(state: PetState) {
   }
   if (state.stage === 'teen' && state.ageDays >= 6) {
     state.stage = 'adult';
-    state.form = state.careMistakes <= 5 && state.discipline >= 60 ? 'angel' : state.careMistakes <= 9 ? 'star' : 'grump';
+    state.form =
+      state.careMistakes <= 5 && state.discipline >= 60 ? 'angel' : state.careMistakes <= 9 ? 'star' : 'grump';
   }
   if (state.stage === 'adult' && state.ageDays >= 13) {
     state.stage = 'elder';
@@ -216,7 +241,7 @@ export function advanceSecond(previous: PetState): PetState {
 
   state.nextSicknessCheckIn -= 1;
   if (state.nextSicknessCheckIn <= 0) {
-    const risk = ((100 - state.hygiene) / 900) + state.poops * 0.018 + ((100 - state.health) / 1200);
+    const risk = (100 - state.hygiene) / 900 + state.poops * 0.018 + (100 - state.health) / 1200;
     if (!state.sick && Math.random() < risk) state.sick = true;
     state.nextSicknessCheckIn = FAST_MODE ? randomIn(90, 150) : randomIn(650, 1200);
   }
@@ -268,6 +293,8 @@ export function simulateOffline(state: PetState) {
 }
 
 export const petHour = (state: PetState) => Math.floor((state.lifetimeSeconds / GAME_HOUR_SECONDS) % 24);
-export const petMinute = (state: PetState) => Math.floor(((state.lifetimeSeconds % GAME_HOUR_SECONDS) / GAME_HOUR_SECONDS) * 60);
+export const petMinute = (state: PetState) =>
+  Math.floor(((state.lifetimeSeconds % GAME_HOUR_SECONDS) / GAME_HOUR_SECONDS) * 60);
 export const pct = (value: number) => `${Math.round(clamp(value))}%`;
-export const satisfy = (state: PetState, needs: Need[]) => needs.includes(state.callReason as Need) ? null : state.callReason;
+export const satisfy = (state: PetState, needs: Need[]) =>
+  needs.includes(state.callReason as Need) ? null : state.callReason;

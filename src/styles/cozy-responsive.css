@@ -1,0 +1,276 @@
+@media (max-width: 1120px) {
+  .modern-mode .game-layout {
+    grid-template-columns: minmax(215px, 270px) minmax(430px, 1fr);
+    gap: 20px;
+  }
+  .modern-mode .action-card {
+    grid-column: 1 / -1;
+    grid-template-columns: 190px 1fr;
+  }
+  .modern-mode .action-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+  .modern-mode .action-grid button {
+    min-height: 86px;
+    padding: 7px 3px;
+  }
+  .modern-mode .action-grid .ritual-icon {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 4px;
+  }
+  .modern-mode .action-grid b {
+    min-height: 2.2em;
+    font-size: 10px;
+  }
+  .modern-mode .action-grid small,
+  .modern-mode .tip-card {
+    display: none;
+  }
+  .modern-mode .aside-title .care-status:not(.condition-normal) {
+    max-width: 180px;
+  }
+  .modern-mode .device-wrap {
+    width: min(100%, 590px);
+  }
+  .modern-mode .ritual-flight {
+    --ritual-start-left: 50%;
+    --ritual-start-top: 109%;
+  }
+}
+
+@media (max-width: 760px) {
+  body:has(.modern-mode) {
+    background-position:
+      center,
+      center,
+      center,
+      54% center;
+  }
+  .modern-mode {
+    padding: 10px 12px 24px;
+    overflow-x: clip;
+  }
+  .modern-mode .topbar {
+    align-items: center;
+    min-height: 58px;
+    padding: 8px 9px 8px 11px;
+  }
+  .modern-mode .brand-lockup b {
+    font-size: 18px;
+  }
+  .modern-mode .brand-lockup small {
+    display: none;
+  }
+  .modern-mode .brand-star {
+    width: 38px;
+    height: 38px;
+  }
+  .modern-mode .topbar-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .modern-mode .topbar-actions button,
+  .modern-mode .fast-badge {
+    min-height: 34px;
+    padding: 6px 8px;
+    font-size: 9px;
+  }
+  .modern-mode .game-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    padding-top: 8px;
+  }
+  .modern-mode .device-zone {
+    order: 1;
+    width: 100%;
+    overflow: visible;
+  }
+  .modern-mode .sanctuary-title {
+    margin-bottom: 1px;
+  }
+  .modern-mode .sanctuary-title b {
+    font-size: 15px;
+  }
+  .modern-mode .device-wrap {
+    width: min(100%, 530px);
+    max-width: none;
+    flex: 0 0 auto;
+  }
+  .modern-mode .pet-card {
+    order: 2;
+    width: min(100%, 560px);
+    transform: none;
+  }
+  .modern-mode .action-card {
+    order: 3;
+    width: min(100%, 560px);
+    display: block;
+    transform: none;
+  }
+  .modern-mode .action-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .modern-mode .action-grid button {
+    min-height: 100px;
+    padding: 8px 4px;
+  }
+  .modern-mode .action-grid .ritual-icon {
+    width: 44px;
+    height: 44px;
+  }
+  .modern-mode .action-grid b {
+    font-size: 11px;
+  }
+  .modern-mode .aside-title {
+    display: flex;
+    margin-bottom: 15px;
+  }
+  .modern-mode .aside-title .care-status:not(.condition-normal) {
+    max-width: 224px;
+  }
+  .modern-mode .key-hint {
+    display: flex;
+    margin-top: -15px;
+  }
+  .modern-mode .key-hint span {
+    min-width: 0;
+    padding: 7px 9px;
+    font-size: 10px;
+  }
+  .modern-mode .key-hint svg {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .modern-mode .brand-star {
+    display: none;
+  }
+  .modern-mode .topbar {
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .modern-mode .brand-lockup {
+    padding-top: 8px;
+  }
+  .modern-mode .brand-lockup b {
+    font-size: 16px;
+  }
+  .modern-mode .topbar-actions {
+    gap: 5px;
+  }
+  .modern-mode .topbar-actions button:not(.mode-toggle) {
+    width: 34px;
+    padding-inline: 0;
+  }
+  .modern-mode .topbar-actions button:not(.mode-toggle) span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .modern-mode .topbar-actions .mode-toggle {
+    padding-inline: 8px;
+  }
+  .modern-mode .fast-badge {
+    display: none;
+  }
+  .modern-mode .device-zone {
+    width: calc(100% + 12px);
+    margin-inline: -6px;
+  }
+  .modern-mode .device-wrap {
+    width: 100%;
+  }
+  .modern-mode .device-screen {
+    border-radius: 20% 24% 19% 23% / 18% 20% 22% 21%;
+  }
+  .modern-mode .root-crest span {
+    width: 37px;
+    height: 37px;
+    font-size: 17px;
+  }
+  .modern-mode .device-key {
+    width: 13.8%;
+  }
+  .modern-mode .key-a {
+    left: 24.7%;
+  }
+  .modern-mode .key-b {
+    left: 43.1%;
+  }
+  .modern-mode .key-c {
+    left: 61.5%;
+  }
+  .modern-mode .key-hint {
+    gap: 5px;
+  }
+  .modern-mode .key-hint span {
+    font-size: 9px;
+  }
+  .modern-mode .pet-card,
+  .modern-mode .action-card {
+    border-radius: 17px 11px 19px 13px;
+  }
+  .modern-mode .action-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .modern-mode .action-grid button {
+    min-height: 87px;
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    align-items: center;
+    padding: 7px 9px;
+  }
+  .modern-mode .action-grid .ritual-icon {
+    margin: 0;
+  }
+  .modern-mode .action-grid b {
+    min-height: 0;
+    place-items: start;
+    text-align: left;
+    font-size: 12px;
+  }
+  .modern-mode .action-grid small {
+    display: block;
+    min-height: 0;
+    text-align: left;
+    font-size: 9px;
+  }
+  .modern-mode .aside-title small {
+    display: none;
+  }
+  .modern-mode .tip-card {
+    display: grid;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modern-mode::after,
+  .modern-mode .device-wrap::after,
+  .modern-mode .device-wrap,
+  .modern-mode .scene-vines i,
+  .modern-mode .pet-sprite,
+  .modern-mode .meter-delta,
+  .modern-mode .meter-track span,
+  .modern-mode .ritual-active .ritual-icon,
+  .modern-mode .care-status,
+  .cradle-embers i {
+    animation: none !important;
+  }
+  .modern-mode .ritual-flight,
+  .modern-mode .pet-reaction-effect {
+    display: none;
+  }
+  .modern-mode .topbar,
+  .modern-mode .panel,
+  .modern-mode .device-wrap,
+  .modern-mode .pet-interactive,
+  .modern-mode .sanctuary-title b {
+    transition-duration: 0.01ms !important;
+  }
+}

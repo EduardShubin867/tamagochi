@@ -1,0 +1,492 @@
+/* Root sanctuary: the cozy mode is a place in the story, not a handheld shell. */
+:root {
+  --chamber: #140f0d;
+  --soil: #211611;
+  --wood-deep: #291a14;
+  --wood: #3a281f;
+  --wood-lit: #5a4032;
+  --moss-deep: #344032;
+  --moss: #59664e;
+  --plum: #34253f;
+  --amber: #d79a3c;
+  --ember: #b8652e;
+  --parchment: #d8c7a7;
+  --bone: #e8dcc4;
+  --berry: #aa6877;
+  --root-text: #eee3ce;
+  --root-muted: #b5a68c;
+  --root-focus: #f3ca70;
+  --shadow-root: 0 26px 72px rgba(8, 4, 2, 0.5);
+  --shadow-carved: inset 0 1px rgba(255, 237, 204, 0.1), inset 0 -6px rgba(8, 4, 2, 0.36);
+}
+
+body:has(.modern-mode) {
+  color: var(--root-text);
+  background-color: #100c09;
+  background-image:
+    radial-gradient(circle at 14% 92%, rgba(184, 101, 46, 0.28), transparent 29%),
+    radial-gradient(circle at 66% 36%, rgba(215, 154, 60, 0.09), transparent 33%),
+    linear-gradient(180deg, rgba(9, 7, 5, 0.2), rgba(9, 6, 4, 0.72)), url('/assets/cozy-room-root-burrow.webp');
+  background-size: auto, auto, auto, cover;
+  background-position: center, center, center, center;
+  background-attachment: fixed;
+}
+
+.modern-mode {
+  width: min(1560px, 100%);
+  padding: 18px clamp(16px, 3vw, 48px) 26px;
+  color: var(--root-text);
+  isolation: isolate;
+}
+
+.modern-mode::before,
+.modern-mode::after {
+  content: '';
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.modern-mode::before {
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(10, 7, 5, 0.74), transparent 22% 78%, rgba(10, 7, 5, 0.7)),
+    linear-gradient(180deg, rgba(10, 7, 5, 0.18), transparent 46%, rgba(10, 7, 5, 0.42));
+  transition:
+    background 650ms ease,
+    opacity 650ms ease;
+}
+
+.modern-mode::after {
+  left: 7vw;
+  bottom: 5vh;
+  width: 34vw;
+  height: 22vh;
+  border-radius: 50%;
+  background: rgba(184, 101, 46, 0.13);
+  filter: blur(46px);
+  animation: hearth-breathe 5.8s ease-in-out infinite;
+}
+
+.modern-mode button:focus-visible {
+  outline: 3px solid var(--root-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px #1a100c;
+}
+
+.modern-mode .topbar {
+  width: min(1380px, 100%);
+  min-height: 62px;
+  margin: 0 auto;
+  padding: 9px 12px 9px 15px;
+  position: relative;
+  border: 1px solid rgba(220, 182, 123, 0.22);
+  border-radius: 15px 10px 17px 12px;
+  background:
+    linear-gradient(96deg, rgba(255, 230, 186, 0.045), transparent 32%),
+    repeating-linear-gradient(6deg, transparent 0 18px, rgba(15, 8, 5, 0.13) 19px 20px),
+    linear-gradient(180deg, rgba(74, 50, 38, 0.96), rgba(39, 25, 19, 0.97));
+  box-shadow:
+    var(--shadow-carved),
+    0 14px 34px rgba(8, 4, 2, 0.28);
+}
+
+.modern-mode .topbar::before,
+.modern-mode .topbar::after {
+  content: '';
+  position: absolute;
+  top: 17px;
+  width: 6px;
+  height: 28px;
+  border-radius: 50%;
+  background: #21150f;
+  box-shadow:
+    inset 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px #604634;
+}
+.modern-mode .topbar::before {
+  left: -3px;
+}
+.modern-mode .topbar::after {
+  right: -3px;
+}
+
+.modern-mode .brand-lockup {
+  gap: 11px;
+}
+.modern-mode .brand-star {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #8a6033;
+  border-radius: 50% 43% 48% 45%;
+  color: #f0c36c;
+  background: radial-gradient(circle at 40% 32%, #865c2f, #3d281c 66%);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 -5px #1c120d,
+    0 4px 12px rgba(8, 4, 2, 0.34);
+}
+.modern-mode .brand-star svg {
+  width: 21px;
+  height: 21px;
+}
+.modern-mode .brand-lockup b {
+  color: var(--bone);
+  font:
+    700 22px/1 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: 0.21em;
+  text-shadow: 0 2px 8px rgba(8, 4, 2, 0.56);
+}
+.modern-mode .brand-lockup small {
+  margin-top: 5px;
+  color: #c8b89d;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.modern-mode .topbar-actions {
+  gap: 7px;
+}
+.modern-mode .topbar-actions button,
+.modern-mode .fast-badge {
+  min-height: 38px;
+  padding: 8px 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(220, 187, 133, 0.21);
+  border-radius: 10px 8px 11px 7px;
+  color: #ddcfb7;
+  background: linear-gradient(180deg, rgba(43, 57, 40, 0.92), rgba(29, 38, 27, 0.96));
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.07),
+    0 3px 0 #160e0a;
+  backdrop-filter: none;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+}
+.modern-mode .topbar-actions button svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+.modern-mode .topbar-actions button:hover {
+  color: #f3ddb3;
+  border-color: rgba(225, 170, 82, 0.52);
+  background: linear-gradient(180deg, #4c5840, #2f3c2d);
+  transform: translateY(-1px);
+}
+.modern-mode .topbar-actions button:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px rgba(6, 3, 2, 0.32);
+}
+.modern-mode .topbar-actions .mode-toggle {
+  color: #25170f;
+  background: linear-gradient(180deg, #ddb46c, #a86b30);
+  border-color: #f0ca81;
+}
+.modern-mode .topbar-actions .mode-toggle:hover,
+.modern-mode .topbar-actions .mode-toggle:focus-visible {
+  color: #21140e;
+  background: linear-gradient(180deg, #efca80, #bd7d39);
+}
+.modern-mode .fast-badge {
+  min-height: 32px;
+  color: #e2b66b;
+  background: rgba(40, 27, 19, 0.82);
+}
+
+.modern-mode .game-layout {
+  position: relative;
+  grid-template-columns: minmax(230px, 285px) minmax(480px, 1fr) minmax(270px, 320px);
+  gap: clamp(18px, 2.3vw, 38px);
+  align-items: center;
+  padding: 12px 0 4px;
+}
+
+.scene-vines {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.scene-vines i {
+  position: absolute;
+  display: block;
+  border: 16px solid rgba(30, 19, 13, 0.7);
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  filter: drop-shadow(0 8px 6px rgba(3, 2, 1, 0.35));
+}
+.scene-vines i:nth-child(1) {
+  width: 42%;
+  height: 46%;
+  left: 4%;
+  top: 2%;
+  transform: rotate(-20deg);
+}
+.scene-vines i:nth-child(2) {
+  width: 48%;
+  height: 43%;
+  right: 1%;
+  top: 12%;
+  transform: rotate(22deg);
+}
+.scene-vines i:nth-child(3) {
+  width: 54%;
+  height: 25%;
+  left: 24%;
+  bottom: 2%;
+  transform: rotate(6deg);
+  border-width: 11px;
+}
+
+.modern-mode .panel {
+  position: relative;
+  overflow: visible;
+  border: 1px solid rgba(213, 177, 119, 0.22);
+  border-radius: 20px 13px 23px 15px;
+  color: var(--root-text);
+  background:
+    linear-gradient(112deg, rgba(255, 229, 184, 0.045), transparent 30%),
+    repeating-linear-gradient(4deg, transparent 0 22px, rgba(18, 10, 7, 0.17) 23px 24px),
+    linear-gradient(145deg, rgba(71, 48, 36, 0.97), rgba(37, 24, 19, 0.98));
+  box-shadow: var(--shadow-root), var(--shadow-carved);
+  backdrop-filter: none;
+}
+.modern-mode .panel::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  z-index: 0;
+  pointer-events: none;
+  border: 1px solid rgba(222, 188, 130, 0.09);
+  border-radius: 14px 9px 17px 11px;
+}
+.modern-mode .panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.modern-mode .pet-card {
+  padding: 24px 22px 20px;
+  transform: rotate(-0.35deg);
+}
+.modern-mode .pet-card::after {
+  content: '✦';
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #8b693d;
+  border-radius: 50%;
+  color: #d2a853;
+  background: #2c1c15;
+  box-shadow: 0 5px 12px rgba(6, 3, 2, 0.42);
+  transform: translateX(-50%);
+}
+.modern-mode .pet-card-head div > span,
+.modern-mode .aside-title span,
+.modern-mode .mood-note > span {
+  color: #c9aa72;
+  letter-spacing: 0.14em;
+}
+.modern-mode .pet-card-head button {
+  color: var(--bone);
+  font:
+    700 25px/1.1 Georgia,
+    serif;
+}
+.modern-mode .rename-button svg {
+  color: #b99a65;
+}
+.modern-mode .pulse-dot {
+  background: #9db078;
+  box-shadow:
+    0 0 0 3px rgba(157, 176, 120, 0.13),
+    0 0 15px rgba(157, 176, 120, 0.58);
+}
+.modern-mode .pulse-dot.alert {
+  background: #d67a64;
+  box-shadow:
+    0 0 0 3px rgba(214, 122, 100, 0.13),
+    0 0 18px rgba(214, 122, 100, 0.66);
+}
+.modern-mode .stage-row {
+  margin: 18px 0 20px;
+  padding: 12px 0;
+  border-block-color: rgba(220, 188, 135, 0.13);
+}
+.modern-mode .stage-row span {
+  color: #deb778;
+  font-family: Georgia, serif;
+}
+.modern-mode .stage-row small {
+  color: var(--root-muted);
+}
+.modern-mode .primary-meters {
+  gap: 15px;
+}
+.modern-mode .meter-label {
+  margin-bottom: 7px;
+  color: #d2c5ae;
+  font-size: 11px;
+}
+.modern-mode .meter-label strong {
+  color: var(--bone);
+  font-variant-numeric: tabular-nums;
+}
+.modern-mode .meter-track {
+  height: 9px;
+  padding: 2px;
+  overflow: visible;
+  border: 1px solid rgba(218, 184, 126, 0.18);
+  border-radius: 7px 4px 7px 5px;
+  background: #1c120e;
+  box-shadow: inset 0 2px 3px rgba(3, 2, 1, 0.52);
+}
+.modern-mode .meter-track span {
+  height: 100%;
+  border-radius: 4px 2px 4px 3px;
+  box-shadow:
+    0 0 11px color-mix(in srgb, currentColor 45%, transparent),
+    inset 0 1px rgba(255, 255, 255, 0.28);
+}
+.modern-mode .mood-note {
+  margin-top: 22px;
+  padding: 15px 16px 15px 20px;
+  border: 0;
+  border-left: 3px solid #9e7541;
+  border-radius: 4px 13px 7px 5px;
+  background: linear-gradient(90deg, rgba(216, 199, 167, 0.11), rgba(216, 199, 167, 0.035));
+}
+.modern-mode .mood-note p {
+  color: #d5c9b5;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  line-height: 1.48;
+}
+.modern-mode .reset-link {
+  color: #9f907a;
+}
+.modern-mode .reset-link:hover {
+  color: #d99a85;
+}
+
+.sanctuary-title {
+  margin: 2px 0 -3px;
+  text-align: center;
+}
+.sanctuary-title span {
+  display: block;
+  color: #d8ab60;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+}
+.sanctuary-title b {
+  display: block;
+  margin-top: 5px;
+  color: #ded1ba;
+  font:
+    600 17px/1.2 Georgia,
+    serif;
+}
+
+/* The sanctuary mirrors the living root without changing simulation state. */
+.modern-mode .topbar,
+.modern-mode .panel,
+.modern-mode .device-wrap,
+.modern-mode .sanctuary-title b {
+  transition:
+    filter 650ms ease,
+    color 650ms ease,
+    box-shadow 650ms ease;
+}
+.modern-mode.scene-lights-off .topbar,
+.modern-mode.scene-lights-off .panel {
+  filter: brightness(0.82) saturate(0.86);
+}
+.modern-mode.scene-lights-off .sanctuary-title b {
+  color: #bbb6c8;
+}
+.modern-mode.scene-sleeping::after {
+  background: rgba(91, 91, 132, 0.1);
+  animation-duration: 8s;
+}
+.modern-mode.scene-sleeping .cradle-embers i {
+  opacity: 0.45;
+  animation-duration: 7.2s;
+}
+.modern-mode.scene-sick::before {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(93, 115, 76, 0.09), transparent 31%),
+    linear-gradient(90deg, rgba(10, 8, 6, 0.78), transparent 26% 74%, rgba(10, 8, 6, 0.76)),
+    linear-gradient(180deg, rgba(8, 10, 6, 0.12), rgba(8, 7, 5, 0.48));
+}
+.modern-mode.scene-sick .device-wrap .device-screen {
+  box-shadow:
+    inset 0 0 30px rgba(25, 38, 20, 0.78),
+    0 0 24px rgba(123, 148, 91, 0.2);
+}
+.modern-mode.scene-sick .home-screen .pet-sprite {
+  filter: saturate(0.72) brightness(0.88) drop-shadow(0 8px 6px rgba(5, 2, 1, 0.3));
+}
+.modern-mode.scene-critical::before {
+  background:
+    radial-gradient(circle at 50% 43%, rgba(153, 72, 58, 0.1), transparent 28%),
+    linear-gradient(90deg, rgba(12, 6, 5, 0.82), transparent 28% 72%, rgba(12, 6, 5, 0.8)),
+    linear-gradient(180deg, rgba(18, 7, 6, 0.12), rgba(10, 5, 4, 0.52));
+}
+.modern-mode.scene-lights-off::before {
+  background:
+    radial-gradient(circle at 51% 42%, rgba(69, 72, 92, 0.08), transparent 28%),
+    linear-gradient(90deg, rgba(5, 6, 10, 0.84), rgba(9, 8, 14, 0.5) 38% 62%, rgba(5, 6, 10, 0.82)),
+    linear-gradient(180deg, rgba(7, 7, 12, 0.44), rgba(5, 5, 10, 0.7));
+}
+
+.modern-mode.call-pulse::after {
+  animation: hearth-call 0.82s ease-out both;
+}
+.modern-mode.call-pulse .device-wrap {
+  animation: cradle-answer 0.78s ease-out both;
+}
+.modern-mode.call-pulse .scene-vines i:first-child {
+  animation: sanctuary-root-twitch 0.72s ease-out both;
+}
+.modern-mode.call-pulse .scene-vines i:nth-child(2) {
+  animation: sanctuary-root-twitch 0.72s 80ms ease-out both reverse;
+}
+
+@keyframes hearth-call {
+  28% {
+    opacity: 0.82;
+    transform: scale(1.22);
+    background: rgba(209, 123, 52, 0.24);
+  }
+}
+@keyframes cradle-answer {
+  24% {
+    transform: scale(1.012) rotate(-0.35deg);
+  }
+  52% {
+    transform: scale(0.997) rotate(0.25deg);
+  }
+}
+@keyframes sanctuary-root-twitch {
+  32% {
+    transform: translateY(-4px) rotate(1.5deg);
+    filter: drop-shadow(0 8px 10px rgba(184, 101, 46, 0.28));
+  }
+}

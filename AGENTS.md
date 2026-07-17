@@ -4,12 +4,9 @@
 
 This file applies to the entire repository.
 
-Lumi is a Russian-language browser Tamagotchi built with Vite, React, and TypeScript. It has two deliberately different visual modes that share one simulation:
+This project is a Russian-language browser Tamagotchi built with Vite, React, and TypeScript. The user-facing experience is the illustrated cozy root sanctuary.
 
-- **Retro mode** is the default. It is a low-chrome, code-drawn handheld. Pets and action icons are rendered from pixel matrices; the game surface must not depend on illustrated raster sprites.
-- **Cozy mode** uses generated PNG artwork: a room background, an illustrated device shell, pet evolution atlases, and an action icon atlas.
-
-Future changes must preserve both modes unless the task explicitly removes one.
+Legacy retro-mode components and styles remain in the repository but are intentionally hidden from users. Ignore retro mode during normal feature work: do not expose, update, preserve, or verify it unless a task explicitly asks to restore or change it. New features only need a cozy-mode presentation.
 
 ## Product intent
 
@@ -71,13 +68,34 @@ There is currently no lint or unit-test script. Do not claim those checks passed
 │       ├── cozy-room-grunewalda.webp
 │       ├── device.webp
 │       ├── action-atlas.webp
+│       ├── root-cradle-shell-v2.webp
+│       ├── root-button-caps-v2.webp
+│       ├── ritual-token-atlas-v2.webp
 │       ├── pet-atlas-mandrake.png
 │       ├── pet-atlas-mandrake-sleep.png
+│       ├── pet-idle-mandrake-young-v1.png
+│       ├── pet-idle-mandrake-mature-v1.png
 │       └── favicon-mandrake.png
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx
+│   ├── app/
+│   │   ├── persistence.ts
+│   │   └── tabPresentation.ts
+│   ├── components/
+│   │   ├── device/
+│   │   │   ├── screens/
+│   │   │   ├── DeviceScreen.tsx
+│   │   │   ├── RetroDevice.tsx
+│   │   │   └── types.ts
+│   │   ├── layout/
+│   │   └── visuals/
+│   ├── hooks/
+│   │   ├── useAppDialog.ts
+│   │   ├── useGameActions.ts
+│   │   └── usePetRuntime.ts
 │   ├── game.ts
+│   ├── mandrakeCopy.ts
 │   ├── styles.css
 │   └── vite-env.d.ts
 ├── tsconfig*.json
@@ -87,9 +105,15 @@ There is currently no lint or unit-test script. Do not claim those checks passed
 ### File responsibilities
 
 - `src/game.ts` owns serializable simulation types, constants, default state, evolution, one-second simulation, offline progress, and stable game metadata.
-- `src/App.tsx` owns React state orchestration, persistence wiring, input mapping, audio feedback, screen components, the illustrated atlas renderer, and the retro pixel renderer.
-- `src/styles.css` owns both visual systems, device geometry, responsive behavior, animation, and interaction states.
-- `public/assets/` contains cozy-mode raster assets only. Retro mode must remain functional without using these pet and icon images.
+- `src/App.tsx` is the thin application composition layer that connects runtime, actions, layouts, devices, and dialogs.
+- `src/app/` owns persistence keys and migration/loading helpers plus browser-tab title/favicon presentation.
+- `src/hooks/` owns the pet runtime lifecycle, persistence wiring, audio feedback, the central A/B/C input mapping, gameplay actions, and dialog orchestration.
+- `src/components/device/` owns the screen router and individual device screens. `RetroDevice.tsx` is dormant legacy code outside normal maintenance scope.
+- `src/components/layout/` owns the top bar, cozy three-column layout, and accessible application dialog.
+- `src/components/visuals/` owns meters, cozy atlas rendering, and ritual icons. Retro pixel matrices/rendering are dormant legacy code.
+- `src/mandrakeCopy.ts` owns the Russian character voice, action labels, care status text, and caretaker hints.
+- `src/styles.css` owns the active cozy visual system, device geometry, responsive behavior, animation, and interaction states. Imported retro styles are dormant legacy code.
+- `public/assets/` contains the cozy-mode raster assets.
 - `README.md` is player/developer-facing overview documentation. Update it when visible features or setup commands change.
 
 Do not move simulation rules into CSS or render callbacks. Do not make the renderer the source of truth for saveable state.
@@ -112,8 +136,8 @@ When adding a stat or mechanic:
 1. Add a serializable field to `PetState`.
 2. Add a default in `createPet()`.
 3. Update live/offline simulation in `src/game.ts`.
-4. Add player actions in `App.tsx`.
-5. Add display treatment for both visual modes.
+4. Add player actions in `src/hooks/useGameActions.ts`.
+5. Add the cozy-mode display treatment.
 6. Verify old saves still load through the default-state merge.
 
 ### Persistence boundary
@@ -122,13 +146,12 @@ Current keys:
 
 ```ts
 const SAVE_KEY = 'lumi-pocket-pet-v3';
-const VISUAL_MODE_KEY = 'lumi-visual-mode';
 const ONBOARDING_KEY = 'lumi-onboarding-seen-v1';
 ```
 
 Important invariants:
 
-- Cozy/retro selection is presentation preference, not pet simulation state.
+- The legacy `lumi-visual-mode` preference is ignored; the application always renders the cozy sanctuary.
 - `loadPet()` merges persisted state over `createPet()` so newly introduced fields receive safe defaults.
 - Existing saves should not be silently discarded.
 - If a breaking state change is unavoidable, bump the save version/key and implement an intentional migration or explain the reset in the task handoff.
@@ -157,7 +180,7 @@ The physical action map is intentionally stable:
 
 Every new device screen must work through A/B/C before it is considered complete. Pointer/touch buttons may provide direct access, but they are not a replacement for physical-key navigation.
 
-Screen-specific behavior belongs in the central `press()` mapping in `App.tsx`. Avoid scattering global key listeners across components.
+Screen-specific behavior belongs in the central `press()` mapping in `src/hooks/useGameActions.ts`. Avoid scattering global key listeners across components.
 
 ## Pet families and evolution atlases
 
@@ -177,6 +200,8 @@ grumpy     elder       ghost/dead
 
 A species may also provide a sleep atlas through `sleepAtlas`. It must use the same exact 3×3 cell order as the main atlas so the renderer can switch atlases without changing simulation state.
 
+Optional awake idle atlases use an exact 4×3 grid. Columns are the four successive idle frames. `young` rows are baby, child, and teen; `mature` rows are good adult, grumpy adult, and elder. The runtime uses `background-size: 400% 300%` while an idle gesture is active. Egg, hatchling, sleeping, and ghost/dead presentation continue to use the main or sleep 3×3 atlas.
+
 The runtime uses `background-size: 300% 300%` and column/row background positions. Changing atlas dimensions, padding, or order requires updating the renderer and testing every stage.
 
 The selection screen intentionally zooms previews with `background-size: 340% 340%`. This is presentation-only and must not change the main pet crop.
@@ -188,62 +213,55 @@ When adding another family:
 1. Extend `SpeciesId`.
 2. Append an entry to `SPECIES`; do not reorder existing entries casually.
 3. Add a project-local 3×3 cozy atlas under `public/assets/`.
-4. Add a recognizably different retro form in `retroPetPixels()` or provide dedicated code-drawn matrices.
-5. Check egg, baby, adult, elder, and ghost crops.
-6. Verify A/B selection, direct click, save/reload, and both visual modes.
-7. Update `README.md` and this file if the registry or atlas contract changes.
+4. Check egg, baby, adult, elder, and ghost crops.
+5. Verify A/B selection, direct click, and save/reload in the cozy sanctuary.
+6. Update `README.md` and this file if the registry or atlas contract changes.
 
-## Visual-mode contract
+## Visual contract
 
-### Retro mode
+### Cozy sanctuary
 
-Retro mode is intentionally asset-light and focused:
-
-- no cozy side panels;
-- one code-drawn handheld centered in the viewport;
-- pet sprites rendered through `PixelArt` from `PET_PIXELS` plus species-specific pixel modifications;
-- action icons rendered from `ICON_PIXELS`;
-- hard edges, bitmap type, LCD palette, and restrained stepped motion;
-- no use of `.pet-sprite`, `.icon-asset`, or illustrated `<img>` content inside `.retro-zone`.
-
-Do not replace retro pets with PNGs for convenience. If a shape is simple, edit the pixel matrices or code-drawn modifiers.
-
-Cozy mode is the default when `lumi-visual-mode` has not been set. The mode toggle must remain readable in normal, hover, focus, and active states. In particular, preserve the explicit `.retro-mode .mode-toggle:hover` contrast override.
-
-### Cozy mode
-
-Cozy mode uses generated art but DOM UI:
+Cozy mode is a root sanctuary composed from generated WebP art and flexible DOM interaction:
 
 - `cozy-room-root-burrow.webp` is the page background; `cozy-room-grunewalda.webp` is the preserved previous background;
-- `device.webp` is a transparent illustrated shell;
-- `.device-screen` is a real interactive DOM surface positioned over the empty screen opening;
-- A/B/C are transparent DOM buttons positioned over the illustrated physical buttons;
-- side panels show expanded state and quick actions on wide layouts;
-- panels move below the device on narrow layouts.
+- `root-cradle-shell-v2.webp` is the transparent illustrated root cradle around the live screen;
+- `root-button-caps-v2.webp` and `ritual-token-atlas-v2.webp` are calibrated sprite atlases for physical controls and care rituals;
+- the header and both side panels are CSS surfaces so their DOM content remains correctly inset at every aspect ratio;
+- `.device-screen` is the real interactive living hollow inside the cradle;
+- A/B/C are real bone-and-amber DOM buttons on the lower root branch;
+- the left panel is the living-root atlas and the right panel is a rack of care rituals;
+- panels move below the cradle on narrow layouts.
 
-Do not draw text into the device image. All labels and gameplay information must remain DOM content.
+All labels and gameplay information remain DOM content. CSS owns the header, side panels, responsive geometry, focus, and lightweight atmosphere, but must not redraw the main cozy cradle or replace its calibrated WebP art with generic gradients. `device.webp` and `action-atlas.webp` are retained as legacy project assets but are not used by the current cozy shell.
 
-### Cozy device calibration
+### Cozy cradle calibration
 
-The current illustrated asset has fixed proportional hotspots. Treat these values as calibrated:
+The illustrated cradle uses proportional hotspots matched to `root-cradle-shell-v2.webp`. Treat these values as calibrated:
 
 ```css
 .device-screen {
-  left: 27.6%;
-  top: 31.55%;
-  width: 45.1%;
-  height: 31.4%;
+  left: 21.8%;
+  top: 25%;
+  width: 56.2%;
+  height: 37.2%;
 }
 
-.device-key { top: 66.65%; width: 12.5%; }
-.key-a { left: 25.45%; }
-.key-b { left: 43.55%; }
-.key-c { left: 61.55%; }
+.device-key {
+  top: 72.2%;
+  width: 14.4%;
+}
+.key-a {
+  left: 19.9%;
+}
+.key-b {
+  left: 42.8%;
+}
+.key-c {
+  left: 65.1%;
+}
 ```
 
-A/B/C labels are centered with `display: grid; place-items: center`. Do not return to browser-default button alignment. Do not place the small action descriptions inside the image; they belong in the external `.key-hint` row.
-
-At widths up to 760px, the cozy device intentionally uses `min(112vw, 690px)` and a centered flex container. The controlled oversize makes the small generated screen readable. Preserve horizontal centering and ensure the page does not introduce unwanted horizontal scrolling.
+A/B/C labels are centered with `display: grid; place-items: center`. Small action descriptions stay in the external `.key-hint` row. At widths up to 760px the cradle uses `min(100%, 530px)`; at widths up to 520px it fills its safe content width without intentional viewport overflow.
 
 ### Species selection spacing
 
@@ -252,7 +270,7 @@ The cozy atlas has generous transparent padding inside each cell. Selection prev
 ## Styling conventions
 
 - Use the existing CSS variables before inventing isolated colors.
-- Cozy UI uses Manrope and Press Start 2P; retro UI uses Press Start 2P for device-facing text.
+- Cozy UI uses Manrope and Press Start 2P.
 - Keep the live device centered and visually dominant.
 - Respect `prefers-reduced-motion`.
 - New hover styles must maintain readable foreground/background contrast.
@@ -280,7 +298,7 @@ When adding generated raster assets:
 
 For chroma-keyed pixel art, a hard key is often safer than an aggressive soft matte because soft removal can punch transparent holes into pastel details. Inspect cream, pink, lavender, wings, whiskers, gills, and star decorations carefully.
 
-CSS is appropriate for layout, panels, borders, meters, and the retro device. Cozy illustrative subjects should remain image assets; retro pets/icons should remain code-drawn pixels.
+CSS is appropriate for layout, panels, borders, and meters. Cozy illustrative subjects should remain image assets.
 
 ## Gameplay rules to preserve
 
@@ -336,9 +354,9 @@ For UI or gameplay work, also run the app and verify the affected flow in a real
 Check these representative sizes:
 
 - `1440×900`: full cozy three-column layout;
-- `1100×850`: transitional layout and retro desktop;
+- `1100×850`: transitional cozy layout;
 - `609×721`: narrow cozy device calibration and species selection;
-- `390×844`: mobile layout, header wrapping, and retro controls.
+- `390×844`: mobile layout, header wrapping, and cozy controls.
 
 ### Core smoke flow
 
@@ -347,20 +365,17 @@ Use `?fast=1` where appropriate:
 1. Open a fresh session and confirm species selection appears.
 2. Cycle selection with A and confirm with B.
 3. Reload and confirm the selected species/name persists.
-4. Switch visual modes and confirm the same species is shown.
-5. Wait for hatching in fast mode.
-6. Open menu with A.
-7. Feed with B and confirm hunger changes.
-8. Open and cancel the mini-game.
-9. Toggle pause and confirm stats stop changing.
-10. Verify no browser console or page errors.
+4. Wait for hatching in fast mode.
+5. Open menu with A.
+6. Feed with B and confirm hunger changes.
+7. Open and cancel the mini-game.
+8. Toggle pause and confirm stats stop changing.
+9. Verify no browser console or page errors.
 
 ### Visual assertions
 
-- Retro mode contains no cozy pet/icon raster elements inside `.retro-zone`.
-- The retro mode toggle text remains visible on hover and keyboard focus.
-- Cozy A/B/C label centers align with the physical button centers. At 609×721 the text center should match its button center within about one pixel.
-- Cozy device remains horizontally centered when intentionally wider than the viewport content column.
+- Cozy A/B/C labels remain centered inside their bone-and-amber buttons.
+- Cozy cradle remains horizontally centered without creating viewport overflow.
 - Species previews do not overlap their names.
 - The screen overlay stays inside the illustrated pink bezel.
 - Mobile layouts do not create accidental horizontal page scrolling.
@@ -394,10 +409,6 @@ The cozy PNG contains transparent padding. Center the wrapper, not the visible e
 
 Transparent hotspot coordinates and browser-default button baselines are unreliable. Keep explicit proportional positions and grid centering.
 
-### Invisible retro toggle
-
-The generic `.topbar-actions button:hover` rule can override retro colors. Keep the more specific retro hover/focus rule.
-
 ### Stale closure input bugs
 
 Keyboard actions depend on current screen and selection state. Review callback dependencies whenever `press()` changes.
@@ -412,7 +423,7 @@ Update `README.md` when changing:
 
 - install or run commands;
 - controls;
-- visual modes;
+- visual presentation;
 - available species;
 - player-visible mechanics;
 - asset organization.
@@ -431,7 +442,7 @@ Update this `AGENTS.md` when changing architectural contracts, save keys, atlas 
 
 A change is complete only when:
 
-- the requested behavior works in both visual modes or the task explicitly scopes one mode;
+- the requested behavior works in the cozy sanctuary; dormant retro mode is ignored unless explicitly requested;
 - A/B/C keyboard behavior still works;
 - save/reload behavior is correct;
 - `npm run build` succeeds;
