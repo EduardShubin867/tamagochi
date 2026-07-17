@@ -17,8 +17,8 @@ The central fantasy is caring for a small persistent companion over several real
 
 Current core features:
 
-- four pet families: sprout, star cat, axolotl, and cloud dragon;
-- egg selection and hatching;
+- one living mandrake family inhabited by an alraune spirit;
+- root-cocoon selection and awakening;
 - baby, child, teen, adult, and elder progression;
 - care-dependent adult forms;
 - hunger, happiness, health, energy, hygiene, discipline, weight, sickness, sleep, waste, and attention calls;
@@ -67,14 +67,13 @@ There is currently no lint or unit-test script. Do not claim those checks passed
 ├── package-lock.json
 ├── public/
 │   └── assets/
-│       ├── cozy-room.webp
+│       ├── cozy-room-root-burrow.webp
+│       ├── cozy-room-grunewalda.webp
 │       ├── device.webp
 │       ├── action-atlas.webp
-│       ├── pet-atlas.webp
-│       ├── pet-atlas-cat.webp
-│       ├── pet-atlas-aqua.webp
-│       ├── pet-atlas-dragon.webp
-│       └── favicon.webp
+│       ├── pet-atlas-mandrake.png
+│       ├── pet-atlas-mandrake-sleep.png
+│       └── favicon-mandrake.png
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx
@@ -164,12 +163,9 @@ Screen-specific behavior belongs in the central `press()` mapping in `App.tsx`. 
 
 `SpeciesId` and `SPECIES` in `src/game.ts` are the canonical species registry.
 
-Current order is significant because the selection cursor stores an index:
+Current registry order is significant because the selection cursor stores an index:
 
-1. `sprout`
-2. `cat`
-3. `aqua`
-4. `dragon`
+1. `mandrake`
 
 Each cozy-mode pet atlas is an exact 3×3 grid:
 
@@ -178,6 +174,8 @@ egg        hatchling   baby
 child      teen        good adult
 grumpy     elder       ghost/dead
 ```
+
+A species may also provide a sleep atlas through `sleepAtlas`. It must use the same exact 3×3 cell order as the main atlas so the renderer can switch atlases without changing simulation state.
 
 The runtime uses `background-size: 300% 300%` and column/row background positions. Changing atlas dimensions, padding, or order requires updating the renderer and testing every stage.
 
@@ -216,7 +214,7 @@ Cozy mode is the default when `lumi-visual-mode` has not been set. The mode togg
 
 Cozy mode uses generated art but DOM UI:
 
-- `cozy-room.webp` is the page background;
+- `cozy-room-root-burrow.webp` is the page background; `cozy-room-grunewalda.webp` is the preserved previous background;
 - `device.webp` is a transparent illustrated shell;
 - `.device-screen` is a real interactive DOM surface positioned over the empty screen opening;
 - A/B/C are transparent DOM buttons positioned over the illustrated physical buttons;

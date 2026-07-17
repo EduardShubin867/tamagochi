@@ -1,7 +1,9 @@
+import { actionLabels } from './mandrakeCopy';
+
 export type Stage = 'egg' | 'baby' | 'child' | 'teen' | 'adult' | 'elder';
 export type Form = 'egg' | 'hatchling' | 'baby' | 'ears' | 'star' | 'angel' | 'grump' | 'elder';
 export type Need = 'hungry' | 'sad' | 'dirty' | 'sick' | 'sleepy' | 'attention';
-export type SpeciesId = 'sprout' | 'cat' | 'aqua' | 'dragon';
+export type SpeciesId = 'mandrake';
 export type Screen = 'select' | 'home' | 'menu' | 'food' | 'status' | 'clock' | 'game';
 export type ActionId = 'food' | 'game' | 'clean' | 'medicine' | 'light' | 'status' | 'discipline' | 'clock';
 
@@ -54,19 +56,16 @@ export interface PetState {
 }
 
 export const STAGE_LABELS: Record<Stage, string> = {
-  egg: 'Яйцо',
-  baby: 'Малыш',
-  child: 'Непоседа',
-  teen: 'Подросток',
-  adult: 'Звёздный друг',
-  elder: 'Мудрец',
+  egg: 'Корневой кокон',
+  baby: 'Росток',
+  child: 'Молодой корень',
+  teen: 'Колючий нрав',
+  adult: 'Живой талисман',
+  elder: 'Древний корень',
 };
 
-export const SPECIES: { id: SpeciesId; name: string; shortName: string; defaultName: string; trait: string; atlas: string }[] = [
-  { id: 'sprout', name: 'Росток', shortName: 'Росток', defaultName: 'Луми', trait: 'добрый и любопытный', atlas: '/assets/pet-atlas.webp' },
-  { id: 'cat', name: 'Звёздный кот', shortName: 'Кот', defaultName: 'Моки', trait: 'игривый и независимый', atlas: '/assets/pet-atlas-cat.webp' },
-  { id: 'aqua', name: 'Аксолотль', shortName: 'Акса', defaultName: 'Плюх', trait: 'спокойный и ласковый', atlas: '/assets/pet-atlas-aqua.webp' },
-  { id: 'dragon', name: 'Облачный дракон', shortName: 'Дракон', defaultName: 'Искра', trait: 'смелый и озорной', atlas: '/assets/pet-atlas-dragon.webp' },
+export const SPECIES: { id: SpeciesId; name: string; shortName: string; defaultName: string; trait: string; atlas: string; sleepAtlas?: string }[] = [
+  { id: 'mandrake', name: 'Живая мандрагора', shortName: 'Мандрагора', defaultName: 'Корча', trait: 'язвительная, сварливая и верная', atlas: '/assets/pet-atlas-mandrake.png', sleepAtlas: '/assets/pet-atlas-mandrake-sleep.png' },
 ];
 
 export const NEED_LABELS: Record<Need, string> = {
@@ -79,14 +78,14 @@ export const NEED_LABELS: Record<Need, string> = {
 };
 
 export const MENU: { id: ActionId; label: string; icon: number; hint: string }[] = [
-  { id: 'food', label: 'Покормить', icon: 0, hint: 'обед или вкусняшка' },
-  { id: 'game', label: 'Поиграть', icon: 1, hint: 'поднять настроение' },
-  { id: 'clean', label: 'Убраться', icon: 2, hint: 'вернуть чистоту' },
-  { id: 'medicine', label: 'Лекарство', icon: 3, hint: 'помочь при болезни' },
-  { id: 'light', label: 'Ночник', icon: 4, hint: 'уложить спать' },
-  { id: 'status', label: 'Показатели', icon: 5, hint: 'проверить самочувствие' },
-  { id: 'discipline', label: 'Воспитание', icon: 6, hint: 'реагировать на капризы' },
-  { id: 'clock', label: 'Режим дня', icon: 7, hint: 'посмотреть время' },
+  { id: 'food', ...actionLabels.food, icon: 0 },
+  { id: 'game', ...actionLabels.game, icon: 1 },
+  { id: 'clean', ...actionLabels.clean, icon: 2 },
+  { id: 'medicine', ...actionLabels.medicine, icon: 3 },
+  { id: 'light', ...actionLabels.light, icon: 4 },
+  { id: 'status', ...actionLabels.status, icon: 5 },
+  { id: 'discipline', ...actionLabels.discipline, icon: 6 },
+  { id: 'clock', ...actionLabels.clock, icon: 7 },
 ];
 
 export const FAST_MODE = new URLSearchParams(window.location.search).has('fast');
@@ -100,8 +99,8 @@ const randomIn = (min: number, max: number) => Math.floor(min + Math.random() * 
 export function createPet(sound = true): PetState {
   return {
     version: 3,
-    name: 'Луми',
-    species: 'sprout',
+    name: 'Корча',
+    species: 'mandrake',
     speciesIndex: 0,
     lastTickAt: Date.now(),
     lifetimeSeconds: 0,

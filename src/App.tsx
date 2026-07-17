@@ -8,7 +8,6 @@ import {
   RotateCcw,
   Sparkles,
   Star,
-  Trash2,
   TriangleAlert,
   Undo2,
   X,
@@ -31,11 +30,12 @@ import {
   simulateOffline,
   spriteIndex,
 } from './game';
+import { getQuickCarePresentation, pickActionPhrase, quickCareCopy } from './mandrakeCopy';
 
 const SAVE_KEY = 'lumi-pocket-pet-v3';
 const VISUAL_MODE_KEY = 'lumi-visual-mode';
 const ONBOARDING_KEY = 'lumi-onboarding-seen-v1';
-const FAVICON_SOURCE = '/assets/favicon.webp';
+const FAVICON_SOURCE = '/assets/favicon-mandrake.png';
 
 interface TabPresentation {
   title: string;
@@ -56,7 +56,7 @@ const TAB_NEEDS: Record<NonNullable<PetState['callReason']>, Omit<TabPresentatio
 
 function getTabPresentation(state: PetState): TabPresentation {
   if (state.dead) return { title: `${state.name} — добрая память · Lumi`, badge: '×', badgeColor: '#d84d67' };
-  if (state.screen === 'select') return { title: 'Выбери друга · Lumi', badge: '?', badgeColor: '#8a72d8' };
+  if (state.screen === 'select') return { title: 'Пробуди мандрагору · Lumi', badge: '?', badgeColor: '#8a72d8' };
   if (state.sick) return { title: `${state.name} болеет · Lumi`, badge: '+', badgeColor: '#d84d67' };
   if (state.health < 35) return { title: `${state.name} нужна помощь · Lumi`, badge: '+', badgeColor: '#d84d67' };
   if (state.asleep && state.callReason === 'sleepy') return { title: `${state.name} спит · Lumi`, badge: 'z', badgeColor: '#6572b9' };
@@ -72,11 +72,11 @@ function getTabPresentation(state: PetState): TabPresentation {
   if (state.asleep) return { title: `${state.name} спит · Lumi`, badge: 'z', badgeColor: '#6572b9' };
   if (state.energy < 20) return { title: `${state.name} устал · Lumi`, badge: 'z', badgeColor: '#6572b9' };
   if (state.paused) return { title: `${state.name} — пауза · Lumi`, badge: 'Ⅱ', badgeColor: '#777889' };
-  if (state.stage === 'egg') return { title: `${state.name} скоро вылупится · Lumi`, badge: '•', badgeColor: '#8a72d8' };
+  if (state.stage === 'egg') return { title: `${state.name} скоро пробудится · Lumi`, badge: '•', badgeColor: '#8a72d8' };
   return { title: `${state.name} — всё хорошо · Lumi`, badge: '✓', badgeColor: '#4d9d78' };
 }
 
-const RETRO_PALETTE = ['transparent', '#17332e', '#47705a', '#a8c878', '#6b925e'];
+const RETRO_PALETTE = ['transparent', '#17332e', '#796b45', '#b5c67b', '#47705a'];
 
 const PET_PIXELS: string[][] = [
   [
@@ -146,24 +146,34 @@ const ICON_PIXELS: string[][] = [
   ['0001111000', '0012222100', '0122122210', '0122112210', '0122222210', '0012222100', '0001111000', '0000000000'],
 ];
 
-function retroPetPixels(species: SpeciesId, index: number) {
+function retroPetPixels(species: SpeciesId, index: number, asleep = false) {
   const grid = PET_PIXELS[index].map((row) => [...row]);
   const set = (x: number, y: number, value = '1') => {
     if (grid[y]?.[x] !== undefined) grid[y][x] = value;
   };
 
-  if (species === 'cat') {
-    [[3, 3], [3, 2], [3, 1], [4, 0], [4, 1], [4, 2], [5, 2], [10, 2], [11, 0], [11, 1], [11, 2], [12, 1], [12, 2], [12, 3]].forEach(([x, y]) => set(x, y));
-    [[13, 8], [14, 7], [15, 7], [15, 8], [15, 9], [14, 10], [13, 10]].forEach(([x, y]) => set(x, y, '2'));
+  void species;
+  const leafPixels = index === 0
+    ? [[6, 1], [7, 0], [7, 1], [8, 1], [9, 0], [9, 1]]
+    : [[5, 2], [5, 1], [6, 2], [7, 1], [7, 0], [8, 1], [9, 2], [10, 1], [10, 2]];
+  leafPixels.forEach(([x, y]) => set(x, y, '4'));
+
+  if (index > 0 && index < 8) {
+    [[2, 8], [1, 9], [13, 8], [14, 9]].forEach(([x, y]) => set(x, y, '2'));
+    [[4, 13], [3, 14], [5, 14], [10, 13], [10, 14], [12, 14]].forEach(([x, y]) => set(x, y));
   }
-  if (species === 'aqua') {
-    [[2, 3], [1, 2], [1, 4], [0, 3], [2, 7], [1, 8], [13, 3], [14, 2], [14, 4], [15, 3], [13, 7], [14, 8]].forEach(([x, y]) => set(x, y, '4'));
-    [[2, 4], [1, 5], [0, 5], [2, 6], [13, 4], [14, 5], [15, 5], [13, 6], [13, 10], [14, 11], [15, 10]].forEach(([x, y]) => set(x, y, '1'));
+  if (index === 4 || index === 6) {
+    [[5, 7], [6, 7], [9, 7], [10, 7], [6, 8], [9, 8]].forEach(([x, y]) => set(x, y, '1'));
   }
-  if (species === 'dragon') {
-    [[4, 2], [4, 1], [5, 0], [5, 1], [10, 1], [10, 0], [11, 1], [11, 2]].forEach(([x, y]) => set(x, y));
-    [[2, 5], [1, 4], [0, 3], [0, 4], [1, 6], [0, 7], [13, 5], [14, 4], [15, 3], [15, 4], [14, 6], [15, 7]].forEach(([x, y]) => set(x, y, '2'));
-    [[2, 6], [1, 7], [13, 6], [14, 7], [13, 10], [14, 10], [15, 9], [15, 10], [14, 11]].forEach(([x, y]) => set(x, y));
+  if (index === 5) {
+    [[3, 10], [4, 11], [11, 11], [12, 10]].forEach(([x, y]) => set(x, y, '3'));
+  }
+  if (index === 7) {
+    [[6, 0], [7, 0], [8, 0], [9, 0], [6, 1], [9, 1]].forEach(([x, y]) => set(x, y));
+  }
+  if (asleep && index > 0 && index < 8) {
+    [[5, 6], [6, 6], [9, 6], [10, 6]].forEach(([x, y]) => set(x, y));
+    [[5, 7], [9, 7]].forEach(([x, y]) => set(x, y, '2'));
   }
   return grid.map((row) => row.join(''));
 }
@@ -194,11 +204,34 @@ function PixelArt({ map, className = '', label }: { map: string[]; className?: s
 function loadPet() {
   try {
     const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null') as PetState | null;
-    if (saved?.version === 3) return simulateOffline({ ...createPet(saved.sound), ...saved, screen: saved.screen === 'select' ? 'select' : 'home', miniGame: null });
+    if (saved?.version === 3) {
+      const legacyNames = ['Луми', 'Моки', 'Плюх', 'Искра'];
+      return simulateOffline({
+        ...createPet(saved.sound),
+        ...saved,
+        name: legacyNames.includes(saved.name) ? SPECIES[0].defaultName : saved.name,
+        species: 'mandrake',
+        speciesIndex: 0,
+        screen: saved.screen === 'select' ? 'select' : 'home',
+        miniGame: null,
+      });
+    }
   } catch (error) {
     console.warn('Не удалось прочитать сохранение', error);
   }
   return createPet();
+}
+
+function createSelectedMandrake(sound = true): PetState {
+  const pet = createPet(sound);
+  return {
+    ...pet,
+    name: SPECIES[0].defaultName,
+    species: SPECIES[0].id,
+    speciesIndex: 0,
+    screen: 'home',
+    lastTickAt: Date.now(),
+  };
 }
 
 function IconAsset({ index, className = '' }: { index: number; className?: string }) {
@@ -221,15 +254,19 @@ function PetSprite({ state, compact = false, speciesOverride, spriteOverride }: 
 }) {
   const index = spriteOverride ?? spriteIndex(state);
   const species = speciesOverride ?? state.species;
+  const speciesData = SPECIES.find((item) => item.id === species) ?? SPECIES[0];
+  const atlas = state.asleep && speciesData.sleepAtlas ? speciesData.sleepAtlas : speciesData.atlas;
   const column = index % 3;
   const row = Math.floor(index / 3);
+  const atlasRowPosition = state.asleep && speciesData.sleepAtlas ? row * 50 : ([0, 43.7, 93.2][row] ?? row * 50);
   return (
     <div
       className={`pet-sprite ${compact ? 'compact' : ''} ${state.asleep ? 'sleeping' : ''}`}
       data-species={species}
+      data-sprite={index}
       style={{
-        backgroundImage: `url('${SPECIES.find((item) => item.id === species)?.atlas ?? SPECIES[0].atlas}')`,
-        backgroundPosition: `var(--sprite-x, ${column * 50}%) var(--sprite-y, ${row * 50}%)`,
+        backgroundImage: `url('${atlas}')`,
+        backgroundPosition: `var(--sprite-x, ${column * 50}%) var(--sprite-y, ${atlasRowPosition}%)`,
       }}
       role="img"
       aria-label={`${state.name}, ${STAGE_LABELS[state.stage]}`}
@@ -249,7 +286,7 @@ function PetVisual({ state, compact = false, retro = false, speciesOverride, spr
   if (retro) {
     return (
       <PixelArt
-        map={retroPetPixels(species, index)}
+        map={retroPetPixels(species, index, state.asleep)}
         className={`pixel-pet ${compact ? 'compact' : ''} ${state.asleep ? 'sleeping' : ''}`}
         label={`${state.name}, ${STAGE_LABELS[state.stage]}`}
       />
@@ -285,7 +322,7 @@ function SpeciesScreen({ state, actions, retro = false }: { state: PetState; act
   const selected = SPECIES[state.speciesIndex] ?? SPECIES[0];
   return (
     <div className="screen-page species-screen">
-      <div className="screen-topline"><span>ВЫБЕРИ ДРУГА</span><span>{state.speciesIndex + 1}/4</span></div>
+      <div className="screen-topline"><span>ЖИВОЙ КОРЕНЬ</span><span>{state.speciesIndex + 1}/{SPECIES.length}</span></div>
       <div className="species-grid">
         {SPECIES.map((species, index) => (
           <button
@@ -306,22 +343,19 @@ function SpeciesScreen({ state, actions, retro = false }: { state: PetState; act
 
 function HomeScreen({ state, message, retro = false }: { state: PetState; message: string; retro?: boolean }) {
   const callout = state.dead
-    ? 'Спасибо за заботу…'
-    : message || (state.callReason ? NEED_LABELS[state.callReason] : state.stage === 'egg' ? 'Скоро увидимся!' : state.asleep ? 'Тихо сопит…' : 'Рад тебя видеть!');
+    ? 'Мой шнурок защитит тебя…'
+    : message || (state.callReason ? NEED_LABELS[state.callReason] : state.stage === 'egg' ? 'Не вздумай меня вырывать!' : state.asleep ? 'Тихо ворчит во сне…' : 'Чего уставился?');
+  const hasLongCallout = callout.length > 40;
 
   return (
-    <div className={`screen-page home-screen ${state.lightsOff ? 'lights-off' : ''}`}>
+    <div className={`screen-page home-screen ${state.lightsOff ? 'lights-off' : ''} ${hasLongCallout ? 'long-callout' : ''}`}>
       <div className="screen-topline"><span>{state.name.toUpperCase()}</span><span>ДЕНЬ {state.ageDays + 1}</span></div>
-      <div className={`speech ${state.callReason ? 'urgent' : ''}`}>{callout}</div>
       <div className="pet-stage">
         <PetVisual state={state} retro={retro} />
         {state.asleep && <span className="zzz">z z z</span>}
+        {state.dead && <button className="screen-primary">B — новый корень</button>}
       </div>
-      <div className="ground-line">
-        <span>{state.sick ? 'болеет' : state.asleep ? 'спит' : 'бодрствует'}</span>
-        {state.poops > 0 && <span>{!retro && <Trash2 aria-hidden="true" />}уборка ×{state.poops}</span>}
-      </div>
-      {state.dead && <button className="screen-primary">B — новое яйцо</button>}
+      <div className={`speech ${state.callReason ? 'urgent' : ''}`}>{callout}</div>
     </div>
   );
 }
@@ -336,7 +370,8 @@ function MenuScreen({ state, actions, retro = false }: { state: PetState; action
             key={item.id}
             className={index === state.menuIndex ? 'selected' : ''}
             onClick={() => actions.act(item.id)}
-            aria-label={item.label}
+            aria-label={`${item.label}: ${item.hint}`}
+            title={`${item.label}: ${item.hint}`}
           >
             <IconVisual index={item.icon} retro={retro} />
           </button>
@@ -384,8 +419,8 @@ function DeviceScreen({ state, message, actions, retro = false }: { state: PetSt
     <div className="screen-page food-screen">
       <div className="screen-topline"><span>ЧЕМ УГОСТИТЬ?</span><span>{state.foodIndex + 1}/2</span></div>
       {[
-        { name: 'Тёплый обед', note: '+28 сытости', index: 0 },
-        { name: 'Звёздное печенье', note: '+13 радости', index: 5 },
+        { name: 'Подкормка', note: '+28 сытости', index: 0 },
+        { name: 'Глоток вина', note: '+13 радости', index: 5 },
       ].map((item, index) => (
         <button key={item.name} className={state.foodIndex === index ? 'selected' : ''} onClick={() => actions.feed(index ? 'snack' : 'meal')}>
           <IconVisual index={item.index} retro={retro} />
@@ -401,7 +436,7 @@ function DeviceScreen({ state, message, actions, retro = false }: { state: PetSt
     return (
       <div className="screen-page clock-screen">
         <IconVisual index={7} retro={retro} />
-        <strong>{time}</strong><span>время Луми</span>
+        <strong>{time}</strong><span>время {state.name}</span>
         <small>{real.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })} у тебя</small>
       </div>
     );
@@ -412,7 +447,7 @@ function DeviceScreen({ state, message, actions, retro = false }: { state: PetSt
       <div className="screen-page game-screen">
         <div className="screen-topline"><span>ПРЫЖОК {game.round}/5</span><span className="game-score">{game.score}{!retro && <Star aria-hidden="true" fill="currentColor" />}</span></div>
         <PetVisual state={state} compact retro={retro} />
-        <p>{game.phase === 'result' ? game.result : 'Куда прыгнет Луми?'}</p>
+        <p>{game.phase === 'result' ? game.result : `Куда прыгнет ${state.name}?`}</p>
         <div className="game-choices">
           {[0, 1].map((choice) => (
             <button
@@ -478,13 +513,22 @@ function App() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const dialogTrigger = useRef<HTMLElement | null>(null);
   const previousStage = useRef(state.stage);
+  const previousCharacterPhrase = useRef('');
   const tabPresentation = getTabPresentation(state);
+  const quickCare = getQuickCarePresentation(state);
 
   const say = useCallback((text: string) => {
     setMessage(text);
     window.clearTimeout(messageTimer.current);
     messageTimer.current = window.setTimeout(() => setMessage(''), 2400);
   }, []);
+
+  const sayActionPhrase = useCallback((action: ActionId) => {
+    const phrase = pickActionPhrase(action, previousCharacterPhrase.current);
+    if (!phrase) return;
+    previousCharacterPhrase.current = phrase;
+    say(phrase);
+  }, [say]);
 
   const beep = useCallback((frequency = 620, duration = 0.06) => {
     if (!state.sound) return;
@@ -605,7 +649,7 @@ function App() {
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
     if (previousStage.current !== state.stage) {
       previousStage.current = state.stage;
-      say(state.stage === 'baby' ? 'Пи-пи! Я родился!' : `Новая форма: ${STAGE_LABELS[state.stage]}!`);
+      say(state.stage === 'baby' ? 'А-а-а! Я проснулась!' : `Новая форма: ${STAGE_LABELS[state.stage]}!`);
       beep(880, 0.12);
     }
   }, [state, say, beep]);
@@ -625,6 +669,7 @@ function App() {
   }, [state]);
 
   const feed = useCallback((kind: 'meal' | 'snack') => {
+    if (state.stage === 'egg' || state.dead || state.asleep) return;
     setState((current) => {
       if (current.stage === 'egg' || current.dead || current.asleep) return current;
       return {
@@ -638,9 +683,9 @@ function App() {
         screen: 'home',
       };
     });
-    say(kind === 'meal' ? 'Ням! Как вкусно!' : 'Хрум-хрум!');
+    sayActionPhrase('food');
     beep(740);
-  }, [beep, say]);
+  }, [beep, sayActionPhrase, state.asleep, state.dead, state.stage]);
 
   const act = useCallback((action: ActionId) => {
     beep(620);
@@ -653,29 +698,28 @@ function App() {
       return;
     }
     if (action === 'game') {
+      const canPlay = state.stage !== 'egg' && !state.dead && !state.asleep && !state.sick && state.energy >= 8;
       setState((current) => {
         if (current.stage === 'egg' || current.dead || current.asleep || current.sick || current.energy < 8) return current;
         return { ...current, screen: 'game', miniGame: { round: 1, score: 0, cursor: 0, petChoice: Math.random() < 0.5 ? 0 : 1, phase: 'choose', result: '' } };
       });
+      if (canPlay) sayActionPhrase('game');
       return;
     }
+    if (state.stage === 'egg' || state.dead) return;
     setState((current) => {
       if (current.stage === 'egg' || current.dead) return current;
       if (action === 'clean') {
-        say(current.poops ? 'Снова чисто!' : 'И так всё блестит');
         return { ...current, poops: 0, hygiene: 100, health: Math.min(100, current.health + 4), callReason: satisfy(current, ['dirty']), screen: 'home' };
       }
       if (action === 'medicine') {
-        say(current.sick ? 'Уже гораздо лучше!' : 'Фу, горько…');
         return { ...current, sick: false, health: Math.min(100, current.health + (current.sick ? 12 : 0)), happiness: Math.max(0, current.happiness - (current.sick ? 0 : 3)), callReason: satisfy(current, ['sick']), screen: 'home' };
       }
       if (action === 'light') {
         const lightsOff = !current.lightsOff;
-        say(lightsOff ? (current.asleep ? 'Спокойной ночи…' : 'Ой, темно!') : 'Свет включён');
         return { ...current, lightsOff, callReason: lightsOff ? satisfy(current, ['sleepy']) : current.callReason, screen: 'home' };
       }
       const correct = current.callReason === 'attention' && current.hunger > 35 && current.happiness > 30 && !current.sick && current.poops === 0;
-      say(correct ? 'Хорошо, не капризничаю' : 'Но я же не шалил!');
       return {
         ...current,
         discipline: Math.max(0, Math.min(100, current.discipline + (correct ? 12 : -2))),
@@ -684,7 +728,13 @@ function App() {
         screen: 'home',
       };
     });
-  }, [beep, say]);
+    if (action === 'light') {
+      if (!state.lightsOff && state.asleep) sayActionPhrase('light');
+      else say(state.lightsOff ? 'Свет включён' : 'Ой, темно!');
+      return;
+    }
+    sayActionPhrase(action);
+  }, [beep, say, sayActionPhrase, state.asleep, state.dead, state.energy, state.lightsOff, state.sick, state.stage]);
 
   const selectSpecies = useCallback((species: SpeciesId) => {
     const choice = SPECIES.find((item) => item.id === species) ?? SPECIES[0];
@@ -721,8 +771,9 @@ function App() {
     }
     if (state.screen === 'home') {
       if (button === 'b' && state.dead) {
-        setState(createPet(state.sound));
-        say('Новое яйцо!');
+        previousStage.current = 'egg';
+        setState(createSelectedMandrake(state.sound));
+        say('Новый корень!');
       } else setState((current) => ({ ...current, screen: 'menu' }));
       return;
     }
@@ -836,9 +887,10 @@ function App() {
     }
     if (dialog === 'reset') {
       localStorage.removeItem(SAVE_KEY);
-      setState(createPet(state.sound));
+      previousStage.current = 'egg';
+      setState(createSelectedMandrake(state.sound));
       closeDialog();
-      say('Новое яйцо уже согревается');
+      say('Новый корень уже пробуждается');
     }
   };
 
@@ -853,7 +905,7 @@ function App() {
           </button>
           <button onClick={() => setState((current) => ({ ...current, sound: !current.sound }))}>{state.sound ? 'Звук включён' : 'Без звука'}</button>
           <button onClick={() => setState((current) => ({ ...current, paused: !current.paused }))}>{state.paused ? 'Продолжить' : 'Пауза'}</button>
-          <button onClick={reset}>Новый питомец</button>
+          <button onClick={reset}>Новая мандрагора</button>
         </div>
       </header>
 
@@ -863,10 +915,10 @@ function App() {
       <section className="game-layout">
         <aside className="pet-card panel">
           <div className="pet-card-head">
-            <div><span>ТВОЙ ПИТОМЕЦ</span><button className="rename-button" onClick={rename}>{state.name}<Pencil aria-hidden="true" /></button></div>
+            <div><span>ТВОЙ ЖИВОЙ КОРЕНЬ</span><button className="rename-button" onClick={rename}>{state.name}<Pencil aria-hidden="true" /></button></div>
             <span className={`pulse-dot ${alertCount ? 'alert' : ''}`} aria-label={alertCount ? 'Нужно внимание' : 'Всё хорошо'} />
           </div>
-          <div className="stage-row"><span>{SPECIES.find((item) => item.id === state.species)?.name ?? 'Росток'} · {STAGE_LABELS[state.stage]}</span><small>{state.ageDays} дн. · {state.weight.toFixed(1)} кг</small></div>
+          <div className="stage-row"><span>{SPECIES.find((item) => item.id === state.species)?.name ?? 'Мандрагора'} · {STAGE_LABELS[state.stage]}</span><small>{state.ageDays} дн. · {state.weight.toFixed(1)} кг</small></div>
           <div className="primary-meters">
             <Meter label="Сытость" value={state.hunger} tone="#f2b56b" />
             <Meter label="Радость" value={state.happiness} tone="#ef86a7" />
@@ -875,9 +927,9 @@ function App() {
           </div>
           <div className="mood-note">
             <span>НАСТРОЕНИЕ</span>
-            <p>{state.dead ? 'Луми оставил добрые воспоминания.' : state.callReason ? NEED_LABELS[state.callReason] : state.sick ? 'Нужна помощь и немного лекарства.' : state.asleep ? 'Сладко спит под звёздным ночником.' : 'Всё хорошо. Можно немного поиграть!'}</p>
+            <p>{state.dead ? `${state.name} стал защитным талисманом.` : state.callReason ? NEED_LABELS[state.callReason] : state.sick ? 'Корень пересох — нужно лекарство.' : state.asleep ? 'Ворчит во сне под притушенным светом.' : 'Подозрительно спокойно. Наверняка что-то замышляет.'}</p>
           </div>
-          <button className="reset-link" onClick={reset}>Начать с нового яйца</button>
+          <button className="reset-link" onClick={reset}>Пробудить новый корень</button>
         </aside>
 
         <section className="device-zone" aria-label="Игровое устройство">
@@ -904,16 +956,21 @@ function App() {
         </section>
 
         <aside className="action-card panel">
-          <div className="aside-title"><div><span>БЫСТРЫЙ УХОД</span><b>{alertCount ? `${alertCount} ${alertCount === 1 ? 'сигнал' : 'сигнала'}` : 'всё спокойно'}</b></div><small>Нажми на действие</small></div>
+          <div className="aside-title"><div><span>{quickCareCopy.title}</span><b aria-live="polite">{quickCare.status}</b></div><small>{quickCareCopy.prompt}</small></div>
           <div className="action-grid">
             {MENU.map((item) => (
-              <button key={item.id} onClick={() => act(item.id)}>
+              <button
+                key={item.id}
+                onClick={() => act(item.id)}
+                aria-label={`${item.label}: ${item.hint}`}
+                title={`${item.label}: ${item.hint}`}
+              >
                 <IconAsset index={item.icon} />
                 <span><b>{item.label}</b><small>{item.hint}</small></span>
               </button>
             ))}
           </div>
-          <div className="tip-card"><IconAsset index={4} /><p><b>Подсказка дня</b>Если Луми уснул, выключи ночник. Так энергия восстановится быстрее.</p></div>
+          <div className="tip-card"><IconAsset index={4} /><p><b>{quickCareCopy.hintTitle}</b>{quickCare.hint}</p></div>
         </aside>
       </section>
       )}
@@ -945,9 +1002,9 @@ function App() {
             {dialog === 'welcome' ? <Sparkles /> : dialog === 'reset' ? <TriangleAlert /> : <Pencil />}
           </div>
           <div className="dialog-copy">
-            <h2 id="app-dialog-title">{dialog === 'welcome' ? 'Добро пожаловать!' : dialog === 'reset' ? 'Начать заново?' : 'Как зовут питомца?'}</h2>
+            <h2 id="app-dialog-title">{dialog === 'welcome' ? 'Добро пожаловать в корни Госпожи!' : dialog === 'reset' ? 'Начать заново?' : 'Как зовут мандрагору?'}</h2>
             <p id="app-dialog-description">
-              {dialog === 'welcome' ? 'Луми — маленький друг, которому нужна твоя забота.' : dialog === 'reset' ? 'Текущий прогресс будет удалён, а выбор нового яйца начнётся сначала.' : 'Имя можно изменить в любой момент. До 10 символов.'}
+              {dialog === 'welcome' ? 'В живом корне поселилась крошечная альрауна. Она язвительна, сварлива и всё равно нуждается в твоей заботе.' : dialog === 'reset' ? 'Текущий прогресс будет удалён, а пробуждение нового корня начнётся сначала.' : 'Имя можно изменить в любой момент. До 10 символов.'}
             </p>
           </div>
           {dialog === 'welcome' && (
@@ -959,7 +1016,7 @@ function App() {
           )}
           {dialog === 'rename' && (
             <label className="dialog-field" htmlFor="pet-name">
-              <span>Имя питомца</span>
+              <span>Имя мандрагоры</span>
               <input
                 id="pet-name"
                 data-autofocus
