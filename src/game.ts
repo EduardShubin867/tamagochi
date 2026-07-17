@@ -86,8 +86,8 @@ export const SPECIES: {
     atlas: '/assets/pet-atlas-mandrake.png',
     sleepAtlas: '/assets/pet-atlas-mandrake-sleep.png',
     idleAtlases: {
-      young: '/assets/pet-idle-mandrake-young-v1.png',
-      mature: '/assets/pet-idle-mandrake-mature-v1.png',
+      young: '/assets/pet-idle-mandrake-young-v1.webp',
+      mature: '/assets/pet-idle-mandrake-mature-v1.webp',
     },
   },
 ];

@@ -73,8 +73,8 @@ There is currently no lint or unit-test script. Do not claim those checks passed
 │       ├── ritual-token-atlas-v2.webp
 │       ├── pet-atlas-mandrake.png
 │       ├── pet-atlas-mandrake-sleep.png
-│       ├── pet-idle-mandrake-young-v1.png
-│       ├── pet-idle-mandrake-mature-v1.png
+│       ├── pet-idle-mandrake-young-v1.webp
+│       ├── pet-idle-mandrake-mature-v1.webp
 │       └── favicon-mandrake.png
 ├── src/
 │   ├── main.tsx
